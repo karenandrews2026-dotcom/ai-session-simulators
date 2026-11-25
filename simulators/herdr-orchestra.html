@@ -104,7 +104,7 @@ footer{flex:0 0 auto;text-align:center;font-size:13px;font-weight:800;opacity:.7
     <p>How herdr lets your AI agents find each other and pass jobs around</p>
   </div>
   <div class="spacer"></div>
-  <div class="toggle" id="toggle" role="switch" tabindex="0" aria-pressed="false"><span class="sw"></span><span id="toggleLabel">Desktop app vs terminal</span></div>
+  <div class="toggle" id="toggle" role="switch" tabindex="0" aria-pressed="false"><span class="sw"></span><span id="toggleLabel">Why desktop only</span></div>
 </header>
 
 <main>
@@ -177,14 +177,13 @@ footer{flex:0 0 auto;text-align:center;font-size:13px;font-weight:800;opacity:.7
 </g>
 
   <!-- folder -->
-  <g class="hot" id="g-folder" data-key="folder" tabindex="0" role="button" aria-label="Your project folder">
+  <g class="hot" id="g-folder" data-key="folder" tabindex="0" role="button" aria-label="Your project space">
     <rect class="ol" x="720" y="320" width="290" height="170" rx="24" fill="#FFF3C4" stroke="#1E1B2E" stroke-width="4"/>
     <path d="M748 362 h26 l8 9 h30 a6 6 0 0 1 6 6 v36 a6 6 0 0 1 -6 6 h-64 a6 6 0 0 1 -6 -6 v-45 a6 6 0 0 1 6 -6z" fill="#FFD93D" stroke="#1E1B2E" stroke-width="3" stroke-linejoin="round"/>
     <text x="836" y="378" class="t-name" style="font-size:22px">Your project</text>
-    <text x="836" y="402" class="t-name" style="font-size:22px">folder</text>
+    <text x="836" y="402" class="t-name" style="font-size:22px">space</text>
     <rect x="744" y="432" width="242" height="40" rx="12" fill="#1E1B2E"/>
-    <text x="758" y="457" class="t-mono" fill="#fff">$ cd my-project</text>
-    <text x="976" y="457" class="t-mono" fill="#FFD93D" text-anchor="end">$ herdr</text>
+    <text x="865" y="457" class="t-mono" fill="#fff" text-anchor="middle">keep agents in one space</text>
   </g>
 
   <!-- server -->
@@ -210,7 +209,7 @@ footer{flex:0 0 auto;text-align:center;font-size:13px;font-weight:800;opacity:.7
     <g fill="#1E1B2E"><ellipse cx="488" cy="118" rx="6" ry="4.5"/><rect x="492" y="98" width="3" height="20"/></g>
     <text x="520" y="190" class="t-big" text-anchor="middle">herdr</text>
     <text x="520" y="213" class="t-sub" text-anchor="middle">the conductor</text>
-    <text x="520" y="234" class="t-small" text-anchor="middle">runs agents in panes</text>
+    <text x="520" y="234" class="t-small" text-anchor="middle">the desktop app</text>
   </g>
 
   <!-- speech bubbles (shown during Play) -->
@@ -231,25 +230,22 @@ footer{flex:0 0 auto;text-align:center;font-size:13px;font-weight:800;opacity:.7
 </g>
 
 <g id="view-app" style="display:none">
-  <g class="hot" data-key="tui" tabindex="0" role="button" aria-label="Terminal herdr">
-    <rect x="30" y="30" width="440" height="430" rx="24" fill="#4D96FF"/>
-    <path d="M32 84 H468 V436 Q468 458 446 458 H54 Q32 458 32 436 Z" fill="#fff"/>
+  <g class="hot" data-key="tui" tabindex="0" role="button" aria-label="Homebrew herdr CLI, uninstalled">
+    <rect x="30" y="30" width="440" height="430" rx="24" fill="#C5C1D0"/>
+    <path d="M32 84 H468 V436 Q468 458 446 458 H54 Q32 458 32 436 Z" fill="#F3F1F7"/>
     <rect class="ol" x="30" y="30" width="440" height="430" rx="24" fill="none" stroke="#1E1B2E" stroke-width="4"/>
-    <text x="250" y="66" class="t-name" fill="#fff" text-anchor="middle" style="font-size:24px">Terminal herdr (what we use)</text>
+    <text x="250" y="66" class="t-name" fill="#1E1B2E" text-anchor="middle" style="font-size:22px">Homebrew CLI (removed)</text>
     <rect x="60" y="106" width="380" height="44" rx="12" fill="#1E1B2E"/>
-    <text x="78" y="134" class="t-mono" fill="#fff">$ herdr</text>
-    <text x="250" y="182" class="t-body" text-anchor="middle">its own server, talking on</text>
-    <rect x="160" y="194" width="180" height="40" rx="20" fill="#6BCB77" stroke="#1E1B2E" stroke-width="3"/>
-    <text x="250" y="220" class="t-mono" text-anchor="middle">herdr.sock</text>
-    <g>
-      <rect x="62" y="260" width="112" height="40" rx="20" fill="#FF6B6B" stroke="#1E1B2E" stroke-width="3"/><text x="118" y="286" class="t-tag" text-anchor="middle">claude</text>
-      <rect x="194" y="260" width="112" height="40" rx="20" fill="#4D96FF" stroke="#1E1B2E" stroke-width="3"/><text x="250" y="286" class="t-tag" text-anchor="middle" fill="#fff">opencode</text>
-      <rect x="326" y="260" width="112" height="40" rx="20" fill="#9B5DE5" stroke="#1E1B2E" stroke-width="3"/><text x="382" y="286" class="t-tag" text-anchor="middle" fill="#fff">agy</text>
-    </g>
-    <text x="250" y="336" class="t-body" text-anchor="middle">check it with</text>
-    <rect x="60" y="350" width="380" height="84" rx="12" fill="#1E1B2E"/>
-    <text x="78" y="384" class="t-mono" fill="#fff">$ herdr status</text>
-    <text x="78" y="414" class="t-mono" fill="#fff">$ herdr agent list</text>
+    <text x="78" y="134" class="t-mono" fill="#fff">$ herdr   (do not type this)</text>
+    <text x="250" y="186" class="t-body" text-anchor="middle">it started a second, empty server</text>
+    <rect x="140" y="204" width="220" height="40" rx="20" fill="#FF6B6B" stroke="#1E1B2E" stroke-width="3"/>
+    <text x="250" y="230" class="t-tag" text-anchor="middle" fill="#fff">competing server</text>
+    <text x="250" y="290" class="t-body" text-anchor="middle">Agents in the desktop app</text>
+    <text x="250" y="314" class="t-body" text-anchor="middle">could not see this server, and</text>
+    <text x="250" y="338" class="t-body" text-anchor="middle">this server could not see them.</text>
+    <rect x="60" y="370" width="380" height="64" rx="12" fill="#1E1B2E"/>
+    <text x="250" y="398" class="t-body" fill="#fff" text-anchor="middle">That clash is why it was</text>
+    <text x="250" y="422" class="t-body" fill="#FFD93D" text-anchor="middle">uninstalled. Leave it off.</text>
   </g>
 
   <g class="hot" data-key="wall" tabindex="0" role="button" aria-label="Why they don't mix">
@@ -266,27 +262,31 @@ footer{flex:0 0 auto;text-align:center;font-size:13px;font-weight:800;opacity:.7
     <rect x="482" y="80" width="76" height="300" fill="transparent"/>
   </g>
 
-  <g class="hot" data-key="app" tabindex="0" role="button" aria-label="Herdr desktop app">
+  <g class="hot" data-key="app" tabindex="0" role="button" aria-label="Herdr desktop app, what we use">
     <rect x="570" y="30" width="440" height="430" rx="24" fill="#9B5DE5"/>
     <path d="M572 84 H1008 V436 Q1008 458 986 458 H594 Q572 458 572 436 Z" fill="#fff"/>
     <rect class="ol" x="570" y="30" width="440" height="430" rx="24" fill="none" stroke="#1E1B2E" stroke-width="4"/>
-    <text x="790" y="66" class="t-name" fill="#fff" text-anchor="middle" style="font-size:24px">Herdr desktop app</text>
+    <text x="790" y="66" class="t-name" fill="#fff" text-anchor="middle" style="font-size:24px">Herdr desktop (what we use)</text>
     <rect x="600" y="106" width="380" height="44" rx="12" fill="#1E1B2E"/>
-    <text x="618" y="134" class="t-mono" fill="#fff">herdr-app  (the window)</text>
-    <text x="790" y="182" class="t-body" text-anchor="middle">a separate engine and server</text>
+    <text x="618" y="134" class="t-mono" fill="#fff">open the app, then click +</text>
+    <text x="790" y="182" class="t-body" text-anchor="middle">one server, started by the app</text>
     <rect x="700" y="194" width="180" height="40" rx="20" fill="#E9DCFB" stroke="#1E1B2E" stroke-width="3"/>
-    <text x="790" y="220" class="t-mono" text-anchor="middle">hc</text>
-    <text x="790" y="280" class="t-body" text-anchor="middle">Agents opened here stay here.</text>
-    <text x="790" y="336" class="t-body" text-anchor="middle">it has its own commands</text>
-    <rect x="600" y="350" width="380" height="84" rx="12" fill="#1E1B2E"/>
-    <text x="618" y="384" class="t-mono" fill="#fff">$ hc server status</text>
-    <text x="618" y="414" class="t-mono" fill="#fff">$ hc ls</text>
+    <text x="790" y="220" class="t-mono" text-anchor="middle">desktop</text>
+    <g>
+      <rect x="602" y="260" width="112" height="40" rx="20" fill="#FF6B6B" stroke="#1E1B2E" stroke-width="3"/><text x="658" y="286" class="t-tag" text-anchor="middle">claude</text>
+      <rect x="734" y="260" width="112" height="40" rx="20" fill="#4D96FF" stroke="#1E1B2E" stroke-width="3"/><text x="790" y="286" class="t-tag" text-anchor="middle" fill="#fff">agy</text>
+      <rect x="866" y="260" width="112" height="40" rx="20" fill="#FFD93D" stroke="#1E1B2E" stroke-width="3"/><text x="922" y="286" class="t-tag" text-anchor="middle">+ more</text>
+    </g>
+    <text x="790" y="336" class="t-body" text-anchor="middle">Close the window: agents keep going.</text>
+    <text x="790" y="362" class="t-body" text-anchor="middle">Shut down the Mac: they stop.</text>
+    <rect x="600" y="384" width="380" height="50" rx="12" fill="#1E1B2E"/>
+    <text x="790" y="415" class="t-body" fill="#FFD93D" text-anchor="middle">After a restart, open herdr yourself.</text>
   </g>
 
   <rect x="30" y="476" width="980" height="56" rx="18" fill="#FFD93D" stroke="#1E1B2E" stroke-width="3"/>
-  <text x="520" y="501" class="t-body" text-anchor="middle" style="font-weight:800">They don't share agents: what runs in one doesn't show up in the other.</text>
-  <text x="520" y="522" class="t-body" text-anchor="middle">Pick ONE. In our class we use the terminal herdr.</text>
-</g>
+  <text x="520" y="501" class="t-body" text-anchor="middle" style="font-weight:800">Two herdr servers at once caused the trouble, so the Homebrew CLI was removed.</text>
+  <text x="520" y="522" class="t-body" text-anchor="middle">We use the herdr desktop app only. Do not install the terminal command again.</text>
+</g></g>
 
     </svg>
   </div>
@@ -300,9 +300,9 @@ footer{flex:0 0 auto;text-align:center;font-size:13px;font-weight:800;opacity:.7
     <div class="card server3">
       <h3>What the server is, in 3 lines</h3>
       <ol>
-        <li>herdr is like a building manager: the server is the office that stays open in the background, and each pane is a room where one AI agent works.</li>
-        <li>Agents can only see and message each other through that office. If the server isn't running, nobody can find anybody.</li>
-        <li>Every session: open Terminal, type <code>herdr</code>, start your agents inside it.</li>
+        <li>herdr is like a building manager: the desktop app is the building, the server is the office that stays open in the background, and each pane is a room where one AI agent works.</li>
+        <li>Closing the herdr window is fine. The office stays open, and the agents keep working. They stop only when you shut down the Mac.</li>
+        <li>After a restart, open the herdr desktop app yourself and start your agents again. It is not a login item, so it will not open on its own.</li>
       </ol>
     </div>
   </aside>
@@ -311,10 +311,10 @@ footer{flex:0 0 auto;text-align:center;font-size:13px;font-weight:800;opacity:.7
 <section class="setup">
   <div class="setup-head"><h2>Set up your ecosystem</h2><span>4 steps, tap one for details</span></div>
   <div class="strip">
-    <div class="card step" data-key="s1" tabindex="0" role="button"><div class="n" style="background:var(--yel)">1</div><h3>Start herdr in a project folder</h3><p>Open Terminal, go into your folder, type herdr.</p><code>cd my-project &amp;&amp; herdr</code></div>
-    <div class="card step" data-key="s2" tabindex="0" role="button"><div class="n" style="background:var(--sky);color:#fff">2</div><h3>Open a pane per agent</h3><p>Split the window, start one agent in each pane.</p><code>claude</code> <code>opencode</code> <code>agy</code></div>
-    <div class="card step" data-key="s3" tabindex="0" role="button"><div class="n" style="background:var(--coral);color:#fff">3</div><h3>Add the herdr skill to Claude</h3><p>A little instruction sheet so Claude knows the herdr commands.</p><code>herdr --skill</code></div>
-    <div class="card step" data-key="s4" tabindex="0" role="button"><div class="n" style="background:var(--grape);color:#fff">4</div><h3>Give each agent a role</h3><p>Like seats in an orchestra:</p><div class="roles"><span style="background:#FFD6D6">Claude plans</span><span style="background:#D6E6FF">opencode writes captions</span><span style="background:#EBDDFB">agy makes flyers</span></div></div>
+    <div class="card step" data-key="s1" tabindex="0" role="button"><div class="n" style="background:var(--yel)">1</div><h3>Open herdr desktop</h3><p>After a restart, open it yourself. It is not a login item.</p></div>
+    <div class="card step" data-key="s2" tabindex="0" role="button"><div class="n" style="background:var(--sky);color:#fff">2</div><h3>Click + and pick an agent</h3><p>Stay in the same space. Choose Claude or Antigravity (agy).</p><code>+</code> <code>claude</code> <code>agy</code></div>
+    <div class="card step" data-key="s3" tabindex="0" role="button"><div class="n" style="background:var(--coral);color:#fff">3</div><h3>Set /model, then rename</h3><p>Pick a cheap model first, then right-click a clear name.</p><code>/model</code></div>
+    <div class="card step" data-key="s4" tabindex="0" role="button"><div class="n" style="background:var(--grape);color:#fff">4</div><h3>Give a short brief</h3><p>Tell the agent how it should work, then you can hand it a job.</p></div>
   </div>
 </section>
 
@@ -322,31 +322,31 @@ footer{flex:0 0 auto;text-align:center;font-size:13px;font-weight:800;opacity:.7
 
 <script>
 const INFO = {
-  conductor:{k:"The conductor", t:"herdr", c:"#FFF3C4", b:`<p>herdr is a program that runs inside your Mac's Terminal. It splits the window into <b>panes</b>, and each pane can hold one AI agent.</p><p>Like a conductor, herdr knows who is playing and in which seat, so the agents can find each other and pass jobs around.</p><span class="chip">herdr</span><div class="say"><b>Try saying to Claude:</b> "Use herdr to list the other agents."</div>`},
-  server:{k:"Behind the scenes", t:"The background server", c:"#E8F7EA", b:`<p>When you type <b>herdr</b>, it quietly starts a server in the background. You don't have to start it by hand.</p><p>The server keeps your agents alive and lets them see and message each other through a private connection on your own Mac (a file called <b>herdr.sock</b>). Nothing goes over the internet for this part.</p><p>Closing the Terminal window doesn't stop it. If it isn't running, nobody can find anybody.</p><span class="chip">herdr status</span>`},
+  conductor:{k:"The conductor", t:"herdr desktop", c:"#FFF3C4", b:`<p>herdr is the <b>desktop app</b> you open like any other Mac app. It splits the window into <b>panes</b>, and each pane can hold one AI agent.</p><p>Like a conductor, herdr knows who is playing and in which seat, so the agents can find each other and pass jobs around.</p><div class="say"><b>After a restart:</b> open the herdr app yourself and start your agents again. It is not a login item.</div>`},
+  server:{k:"Behind the scenes", t:"The background server", c:"#E8F7EA", b:`<p>When you open the herdr desktop app, it quietly starts a server in the background. You don't have to start it by hand.</p><p>The server keeps your agents alive and lets them see and message each other through a private connection on your own Mac. Nothing goes over the internet for this part.</p><p><b>Closing the herdr window is fine.</b> The server keeps running, and the agents keep working. They stop only when you shut down the Mac (or fully quit herdr).</p>`},
   claude:{k:"Pane 1 · premium, best planner", t:"Claude", c:"#FFE9E9", b:`<p>Claude Code runs in this pane. It's a great <b>planner</b>: it can break a big job into small ones and hand them out.</p><p>Claude needs the <b>herdr skill</b>, an instruction sheet that teaches it the herdr commands. Without it, Claude doesn't know <b>herdr agent list</b> even exists.</p><p>It also has to be started <b>inside</b> a herdr pane. Started anywhere else, it can't reach herdr.</p><span class="chip">herdr agent list</span>`},
-  opencode:{k:"Pane 2 · flexible, many models", t:"opencode", c:"#E3EEFF", b:`<p>opencode is another coding agent. Its superpower is flexibility: it can work with many different AI models.</p><p>In our orchestra it takes jobs from Claude, for example writing captions for your retreat videos, and sends the result back.</p><div class="say"><b>Try saying to Claude:</b> "Use herdr to prompt the opencode agent: say hello."</div>`},
-  agy:{k:"Pane 3 · Google's agent", t:"agy", c:"#F1E8FD", b:`<p>agy is the Antigravity command line tool. Inside herdr's settings it's called <b>antigravity-cli</b>, and in the agent list it shows up as antigravity.</p><p>It sits in its own pane, ready to take a job, like making a flyer for your next retreat.</p><span class="chip">agy</span>`},
-  folder:{k:"Where it all starts", t:"Your project folder", c:"#FFF3C4", b:`<p>herdr opens in whatever folder your Terminal is in. So first step into a project folder, then type herdr.</p><p>Think of it as choosing the concert hall before the orchestra walks in.</p><span class="chip">cd my-project</span><br><span class="chip">herdr</span>`},
+  opencode:{k:"Pane 2 · flexible, many models", t:"opencode", c:"#E3EEFF", b:`<p>opencode is another coding agent. Its superpower is flexibility: it can work with many different AI models, including free ones.</p><p>Free models were slow and shaky in class, so <b>skip opencode for now</b>. Practise with Antigravity agents instead.</p>`},
+  agy:{k:"Pane 3 · Google's agent", t:"agy", c:"#F1E8FD", b:`<p>agy is the Antigravity command line tool. Inside herdr's settings it's called <b>antigravity-cli</b>, and in the agent list it shows up as antigravity.</p><p>It sits in its own pane, ready to take a job: writing a list, drawing an SVG, or another task you delegate from mainstream.</p><p>Pick a cheap model first, such as <b>Gemini 3.8 Flash</b>. Hydrogen burns tokens very fast.</p><span class="chip">agy</span>`},
+  folder:{k:"Where it all starts", t:"Your project space", c:"#FFF3C4", b:`<p>In the herdr desktop app, a <b>space</b> is one project. Keep all the agents for that project in the same space. Start a new space when you start a new project.</p><p>Think of it as choosing the concert hall before the orchestra walks in.</p>`},
   wires:{k:"How messages travel", t:"No MCP needed", c:"#FFF3C4", b:`<p>Agents don't talk to each other directly. Each one types a <b>herdr</b> command inside its own pane, and herdr carries the message through the server.</p><p>There is no MCP server for herdr. The herdr command is the only phone line, and it only works from <b>inside</b> a herdr pane.</p><span class="chip">herdr agent prompt opencode "..." --wait</span>`},
-  tui:{k:"Option A · what we use", t:"Terminal herdr", c:"#E3EEFF", b:`<p>You type <b>herdr</b> in the Terminal. It runs its own server on your Mac, and agents started in its panes can see each other.</p><p>This is the version the Claude, opencode and agy hookups are built for, so it's the one we use in class.</p><span class="chip">herdr status</span><br><span class="chip">herdr agent list</span>`},
-  app:{k:"Option B", t:"Herdr desktop app", c:"#F1E8FD", b:`<p>A separate app you open like any Mac app. The window is called <b>herdr-app</b> and its engine is called <b>hc</b>.</p><p>It runs its <b>own</b> server. Agents opened in the app only show up in the app, so the terminal herdr can't see them.</p><span class="chip">hc server status</span><br><span class="chip">hc ls</span>`},
-  wall:{k:"Why they don't mix", t:"Two separate worlds", c:"#FFE9E9", b:`<p>Same name, two different programs, two different servers. They don't share agents: what runs in one doesn't show up in the other.</p><p>So if Claude is opened in the desktop app and you ask terminal herdr for the agent list, it finds nobody. That may be what happened in Session 5.</p><div class="say"><b>Rule of thumb:</b> pick ONE. We use the terminal herdr.</div>`},
-  s1:{k:"Setup step 1", t:"Start herdr in a project folder", c:"#FFF3C4", b:`<p>Open the Terminal app (not inside herdr yet). Go into your project folder, then type herdr. It starts the server if needed and opens the herdr screen.</p><span class="chip">cd my-project</span><br><span class="chip">herdr</span><p>To double check from a second Terminal window:</p><span class="chip">herdr status</span>`},
-  s2:{k:"Setup step 2", t:"Open a pane per agent", c:"#E3EEFF", b:`<p>Split the window so you have one pane per agent: use the right-click menu, or press <b>ctrl+b</b> then <b>v</b>.</p><p>Then start one agent in each pane. Each one needs to be logged in already.</p><span class="chip">claude</span> <span class="chip">opencode</span> <span class="chip">agy</span>`},
-  s3:{k:"Setup step 3", t:"Add the herdr skill to Claude", c:"#FFE9E9", b:`<p>A skill is a little instruction sheet. This one teaches Claude every herdr command, like how to list agents and send them jobs.</p><p>This saves herdr's own copy into Claude's skills folder (no extra tools needed):</p><span class="chip">mkdir -p ~/.claude/skills/herdr &amp;&amp; herdr --skill &gt; ~/.claude/skills/herdr/SKILL.md</span><p>Then restart Claude inside a herdr pane.</p>`},
-  s4:{k:"Setup step 4", t:"Give each agent a role", c:"#F1E8FD", b:`<p>Just like an orchestra has seats, give each agent a job it's good at:</p><p><b>Claude</b> plans the work and hands it out.<br><b>opencode</b> writes captions for your videos.<br><b>agy</b> makes flyers for your retreats.</p><div class="say"><b>Try saying to Claude:</b> "Plan my retreat promo, then use herdr to ask opencode for 3 captions."</div>`}
+  tui:{k:"Uninstalled", t:"Homebrew herdr CLI", c:"#F3F1F7", b:`<p>The Homebrew <b>herdr</b> command in Terminal started its <b>own</b> empty server, separate from the desktop app.</p><p>Two servers at once meant agents could not see each other. That is why the CLI was uninstalled. Do not install it again, and do not type <b>herdr</b> in Terminal.</p>`},
+  app:{k:"What we use", t:"Herdr desktop app", c:"#F1E8FD", b:`<p>This is the app we use. Open it like any other Mac app, then click <b>+</b> to add an agent, set <b>/model</b>, rename it, and give it a short brief.</p><p><b>Closing the window is fine.</b> Agents keep working in the background. They stop when you shut down the Mac. After a restart, open herdr yourself (it is not a login item) and start the agents again.</p>`},
+  wall:{k:"Why they don't mix", t:"Two competing servers", c:"#FFE9E9", b:`<p>Same name, two different programs, two different servers. They don't share agents: what runs in one doesn't show up in the other.</p><p>The desktop app had its own server, and the Homebrew CLI started a second empty one. That clash is what broke the agent list.</p><div class="say"><b>Rule of thumb:</b> use the herdr desktop app only. The Homebrew CLI was uninstalled on purpose.</div>`},
+  s1:{k:"Setup step 1", t:"Open herdr desktop", c:"#FFF3C4", b:`<p>Open the herdr desktop app, just like any other Mac app. It starts its server for you.</p><p>It is <b>not</b> a login item, so after you restart the Mac you must open it yourself, then start your agents again.</p>`},
+  s2:{k:"Setup step 2", t:"Click + and pick an agent", c:"#E3EEFF", b:`<p>Click the <b>+</b> button in the same space, then pick an agent, for example Claude or Antigravity (agy).</p><p>Stay in one space for one project. Keep opencode for later; practise with Antigravity agents for now.</p><span class="chip">+</span> <span class="chip">claude</span> <span class="chip">agy</span>`},
+  s3:{k:"Setup step 3", t:"Set /model, then rename", c:"#FFE9E9", b:`<p>As soon as the agent opens, type <b>/model</b> and pick a cheap model. For Antigravity, use <b>Gemini 3.8 Flash</b>, not Hydrogen (Hydrogen burns tokens very fast).</p><p>Then right-click the pane and <b>rename</b> it, so you can tell your agents apart (for example mainstream, Google Expert, Image expert).</p><span class="chip">/model</span>`},
+  s4:{k:"Setup step 4", t:"Give a short brief", c:"#F1E8FD", b:`<p>Give the new agent a short brief: how it should work, and any rules (for example, "SVG only, never raster").</p><p>Then go back to <b>mainstream</b> (Claude) to hand out jobs, and always ask it to <b>audit</b> the result.</p><div class="say"><b>Try saying to mainstream:</b> "Ask Google Expert for a 5-item priority list, then audit it."</div>`}
 };
 
 const STEPS = [
-  {cap:`Meet your orchestra. herdr is the conductor, the server keeps everyone connected, and each pane is a player.`, lit:["conductor","server","claude","opencode","agy","folder"], info:"conductor"},
-  {cap:`In Terminal, step into your project folder and type <code>herdr</code>. The background server wakes up.`, lit:["folder","server"], flow:[["p-folder",1]], strip:"s1", info:"server"},
-  {cap:`Start one agent in each pane: <code>claude</code>, <code>opencode</code> and <code>agy</code>.`, lit:["claude","opencode","agy"], strip:"s2", info:"claude"},
-  {cap:`Claude asks who else is here by running <code>herdr agent list</code>.`, lit:["claude","conductor","server","wires"], flow:[["p-claude",0],["p-server",0]], bubble:{id:"claude", lines:["$ herdr agent list","","",""]}},
-  {cap:`herdr answers with the list: claude, opencode and antigravity, each idle or working.`, lit:["claude","conductor","server","wires"], flow:[["p-server",1],["p-claude",1]], bubble:{id:"claude", lines:["herdr agent list says:","  claude        working","  opencode      idle","  antigravity   idle"]}},
-  {cap:`Claude sends opencode a job with <code>herdr agent prompt</code>.`, lit:["claude","conductor","opencode","wires"], flow:[["p-claude",0],["p-open",1]], bubble:{id:"claude", lines:["$ herdr agent prompt opencode",'  "3 captions for my retreat video"',"  --wait",""]}, info:"opencode"},
-  {cap:`opencode does the job and replies. Claude waited for it (that's what <code>--wait</code> is for) and gets the result.`, lit:["claude","conductor","opencode","wires"], flow:[["p-open",0],["p-claude",1]], bubble:{id:"open", lines:["Done! 3 captions:","1. Slow down. Breathe in. Arrive.","2. Your reset starts here."]}},
-  {cap:`That's the trick: one conductor, a server that stays on, and agents that talk through herdr.`, lit:["conductor","server","claude","opencode","agy","folder"]}
+  {cap:`Meet your orchestra. The herdr desktop app is the conductor, the server keeps everyone connected, and each pane is a player.`, lit:["conductor","server","claude","opencode","agy","folder"], info:"conductor"},
+  {cap:`Open the herdr desktop app. The background server wakes up. After a restart you must open it yourself (it is not a login item).`, lit:["folder","server"], flow:[["p-folder",1]], strip:"s1", info:"server"},
+  {cap:`Click <code>+</code>, pick an agent, set <code>/model</code>, rename it, and give a short brief.`, lit:["claude","opencode","agy"], strip:"s2", info:"s3"},
+  {cap:`Mainstream (Claude) asks who else is here by running <code>herdr agent list</code>.`, lit:["claude","conductor","server","wires"], flow:[["p-claude",0],["p-server",0]], bubble:{id:"claude", lines:["$ herdr agent list","","",""]}},
+  {cap:`herdr answers with the list: claude and antigravity, each idle or working.`, lit:["claude","conductor","server","wires"], flow:[["p-server",1],["p-claude",1]], bubble:{id:"claude", lines:["herdr agent list says:","  claude        working","  antigravity   idle","  "]}},
+  {cap:`Mainstream sends Antigravity a job with <code>herdr agent prompt</code>.`, lit:["claude","conductor","agy","wires"], flow:[["p-claude",0],["p-agy",1]], bubble:{id:"claude", lines:["$ herdr agent prompt antigravity",'  "Make a 5-item priority list"',"  --wait",""]}, info:"agy"},
+  {cap:`Antigravity does the job and replies. Mainstream waited for it (that's what <code>--wait</code> is for), then audits the result.`, lit:["claude","conductor","agy","wires"], flow:[["p-agy",0],["p-claude",1]], bubble:{id:"claude", lines:["Antigravity sent a 5-item list.","I'll audit it before we accept it.","", ""]}},
+  {cap:`Closing the herdr window is fine: the server stays on. Agents stop only when you shut down the Mac.`, lit:["conductor","server","claude","opencode","agy","folder"], info:"server"}
 ];
 
 const $ = s => document.querySelector(s);
@@ -407,7 +407,7 @@ document.addEventListener("keydown", e=>{ if(e.target.closest("[data-key]")) ret
 function setView(app){
   appView=app; const t=$("#toggle"); t.setAttribute("aria-pressed", app);
   $("#view-main").style.display = app? "none":""; $("#view-app").style.display = app? "":"none";
-  if(app){ step=-1; render(); $("#stepno").textContent="Compare"; $("#captext").innerHTML="Two programs share the name Herdr. Each runs its <b>own</b> server, so agents in one can't see the other. Tap a side to learn more."; showInfo("wall"); $("#next").disabled=true; }
+  if(app){ step=-1; render(); $("#stepno").textContent="Compare"; $("#captext").innerHTML="The Homebrew CLI started a second empty server. That clash is why it was uninstalled. We use the <b>desktop app</b> only. Tap a side to learn more."; showInfo("wall"); $("#next").disabled=true; }
   else if(step<0){ $("#stepno").textContent="Explore"; $("#captext").textContent="Tap any box to learn what it is, or press Play to watch the agents talk."; }
 }
 $("#toggle").onclick = ()=>setView(!appView);
