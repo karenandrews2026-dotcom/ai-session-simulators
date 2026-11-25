@@ -1,0 +1,26 @@
+[
+  {
+    "file": "herdr-orchestra.html",
+    "title": "How herdr connects your agents",
+    "description": "Click through how herdr talks to Claude and the other agents, and why the herdr skill has to be in place first.",
+    "session": "6",
+    "type": "html",
+    "added": "2026-11-25"
+  },
+  {
+    "file": "github-plain-words.html",
+    "title": "GitHub in plain words",
+    "description": "The words you can say to Claude when you want it to pull, commit, push, or open a pull request. No commands to memorise.",
+    "session": "6",
+    "type": "html",
+    "added": "2026-11-25"
+  },
+  {
+    "file": "voiceover-trainer.html",
+    "title": "Your voiceover trainer",
+    "description": "The loop that trains an agent on your voice: your writing on the left, the AI draft on the right, a judge score, and your yes or no.",
+    "session": "6",
+    "type": "html",
+    "added": "2026-11-25"
+  }
+]

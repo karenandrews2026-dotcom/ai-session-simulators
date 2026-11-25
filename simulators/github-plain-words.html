@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitHub in plain words | AI, Your Way</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFF8F0; --ink:#1E1B2E; --coral:#FF6B6B; --yellow:#FFD93D;
+    --mint:#6BCB77; --sky:#4D96FF; --grape:#9B5DE5;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);overflow:hidden}
+  body{font-family:'Nunito',system-ui,sans-serif;color:var(--ink)}
+  #stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0}
+  h1,h2,h3,.baloo{font-family:'Baloo 2','Nunito',sans-serif}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+
+  /* header */
+  #header{position:absolute;left:24px;top:14px;width:1552px;height:86px;display:flex;align-items:center;justify-content:space-between}
+  #header h1{margin:0;font-size:46px;line-height:1;font-weight:800}
+  #header h1 span{background:var(--yellow);padding:0 12px;border-radius:14px;border:4px solid var(--ink)}
+  #header p{margin:16px 0 0;font-size:19px;font-weight:700;opacity:.85}
+  .tag{border:4px solid var(--ink);border-radius:999px;padding:6px 18px;font-weight:800;font-size:17px;background:#fff}
+
+  /* scene */
+  #scene{position:absolute;left:24px;top:108px;width:1060px;height:654px;background:#fff;border:4px solid var(--ink);border-radius:24px;overflow:hidden}
+  #scene svg{display:block;width:100%;height:100%}
+  svg text{font-family:'Nunito',sans-serif;fill:var(--ink)}
+  svg .b{font-family:'Baloo 2','Nunito',sans-serif;font-weight:800}
+  svg .m{font-family:'JetBrains Mono',monospace}
+  .hot{cursor:pointer;transition:filter .2s}
+  .hot:hover{filter:drop-shadow(0 5px 0 rgba(30,27,46,.22))}
+  .hot.glow{filter:drop-shadow(0 0 7px #FFD93D) drop-shadow(0 0 3px #FFB800)}
+  .hot.selected{filter:drop-shadow(0 0 6px #4D96FF) drop-shadow(0 0 2px #4D96FF)}
+  .step{transition:opacity .45s ease}
+  .step.off{opacity:0;pointer-events:none}
+  .draw{stroke-dasharray:1;transition:stroke-dashoffset 1s ease}
+  .draw.off{stroke-dashoffset:1;opacity:1}
+  .draw.on{stroke-dashoffset:0}
+  @keyframes flash{0%{opacity:.95}100%{opacity:0}}
+  #flash.go{animation:flash .6s ease-out}
+
+  /* play bar */
+  #playbar{position:absolute;left:24px;top:774px;width:1060px;height:72px;display:flex;align-items:center;gap:12px;background:#fff;border:4px solid var(--ink);border-radius:24px;padding:0 16px}
+  .btn{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:20px;border:4px solid var(--ink);border-radius:16px;background:#fff;color:var(--ink);padding:2px 16px;height:46px;cursor:pointer;white-space:nowrap}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 4px 0 var(--ink)}
+  .btn:disabled{opacity:.35;cursor:default;transform:none;box-shadow:none}
+  #play{background:var(--coral);color:#fff;min-width:112px}
+  #counter{font-weight:800;font-size:16px;white-space:nowrap;min-width:92px;text-align:center}
+  #caption{font-size:18px;font-weight:700;line-height:1.25;flex:1}
+
+  /* side panel */
+  #side{position:absolute;left:1104px;top:108px;width:472px;height:738px}
+  #side h3{margin:0 0 8px;font-size:22px;line-height:1}
+  #chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .chip{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:18px;height:40px;border:4px solid var(--ink);border-radius:14px;background:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;padding:0 10px;color:var(--ink)}
+  .chip i{width:14px;height:14px;border-radius:50%;border:3px solid var(--ink);flex:none}
+  .chip:hover{transform:translateY(-2px);box-shadow:0 4px 0 var(--ink)}
+  .chip.active{background:var(--ink);color:#fff}
+  .chip.wide{grid-column:span 2}
+  #card{position:absolute;left:0;top:226px;width:472px;height:512px;background:#fff;border:4px solid var(--ink);border-radius:24px;overflow:hidden;display:flex;flex-direction:column}
+  #cardHead{padding:12px 20px 10px;border-bottom:4px solid var(--ink);display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  #cardHead h2{margin:0;font-size:32px;line-height:1.05}
+  #cardWhere{font-size:13px;font-weight:800;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:2px 10px;white-space:nowrap}
+  #cardBody{padding:10px 20px 14px;overflow:auto;flex:1}
+  #cardBody h4{margin:8px 0 2px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;opacity:.65;font-weight:800}
+  #cardBody p{margin:0;font-size:16.5px;line-height:1.38}
+  #cardBody pre{margin:2px 0 0;background:#F3EEE6;border:3px solid var(--ink);border-radius:12px;padding:6px 10px;font-size:13px;line-height:1.45;white-space:pre-wrap;font-family:'JetBrains Mono',monospace}
+  #cardBody pre .c{opacity:.55}
+  .say{margin-top:10px;background:#EAF7EC;border:3px solid var(--ink);border-radius:16px;padding:6px 12px 8px;position:relative}
+  .say h4{margin-top:2px!important}
+  .say p{font-weight:800}
+  #copy{position:absolute;right:8px;top:6px;font-size:12px;font-weight:800;border:2px solid var(--ink);border-radius:999px;background:#fff;padding:1px 9px;cursor:pointer;font-family:'Nunito',sans-serif}
+
+  #footer{position:absolute;left:24px;top:858px;width:1552px;height:30px;display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700;opacity:.75}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="header">
+    <div>
+      <h1 class="baloo"><span>GitHub</span> in plain words</h1>
+      <p>You never type these. Learn the words, then just ask Claude.</p>
+    </div>
+    <div class="tag baloo">AI, Your Way</div>
+  </div>
+
+  <div id="scene">
+  <svg viewBox="0 0 1052 646" xmlns="http://www.w3.org/2000/svg" aria-label="Journey from your Mac to GitHub">
+    <defs>
+      <marker id="arSky" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#4D96FF"/></marker>
+      <marker id="arMint" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#6BCB77"/></marker>
+      <marker id="arGrape" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#9B5DE5"/></marker>
+      <marker id="arInk" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#1E1B2E"/></marker>
+    </defs>
+
+    <!-- ===== Section 1: saving and sharing ===== -->
+    <!-- Your Mac (repo) -->
+    <g id="mac" class="hot" data-term="repo">
+      <rect x="30" y="40" width="320" height="185" rx="18" fill="#fff" stroke="#1E1B2E" stroke-width="4"/>
+      <line x1="30" y1="72" x2="350" y2="72" stroke="#1E1B2E" stroke-width="3"/>
+      <circle cx="50" cy="56" r="5" fill="#FF6B6B"/><circle cx="66" cy="56" r="5" fill="#FFD93D"/><circle cx="82" cy="56" r="5" fill="#6BCB77"/>
+      <text x="190" y="62" text-anchor="middle" class="b" font-size="18">Your Mac</text>
+      <path d="M50 96 v-6 a6 6 0 0 1 6 -6 h70 l12 12 Z" fill="#FFD93D" stroke="#1E1B2E" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="50" y="94" width="280" height="120" rx="12" fill="#FFF1BF" stroke="#1E1B2E" stroke-width="3"/>
+      <text x="66" y="117" font-size="15" font-weight="800">Your vault folder = your repo</text>
+      <g font-size="14.5" font-weight="700">
+        <rect x="68" y="128" width="13" height="16" rx="3" fill="#fff" stroke="#1E1B2E" stroke-width="2"/><text x="90" y="141">profile.md</text>
+        <rect id="vRow" x="62" y="152" width="262" height="24" rx="8" fill="#FFF1BF"/>
+        <rect x="68" y="156" width="13" height="16" rx="3" fill="#fff" stroke="#1E1B2E" stroke-width="2"/><text x="90" y="169">voiceover.md</text>
+        <rect x="68" y="184" width="13" height="16" rx="3" fill="#fff" stroke="#1E1B2E" stroke-width="2"/><text x="90" y="197">agents.md</text>
+      </g>
+    </g>
+    <g class="step" data-from="1">
+      <rect x="232" y="154" width="84" height="21" rx="10.5" fill="#FF6B6B" stroke="#1E1B2E" stroke-width="2"/>
+      <text x="274" y="169" text-anchor="middle" font-size="12.5" font-weight="800" style="fill:#fff">edited</text>
+      <g transform="translate(208 152) rotate(35)"><rect x="0" y="0" width="7" height="22" rx="2" fill="#FFD93D" stroke="#1E1B2E" stroke-width="2"/><path d="M0 22 L3.5 29 L7 22 Z" fill="#1E1B2E"/></g>
+    </g>
+    <rect id="flash" x="62" y="152" width="262" height="24" rx="8" fill="#fff" opacity="0"/>
+    <path d="M14 225 H366 L352 243 H28 Z" fill="#E9E2D8" stroke="#1E1B2E" stroke-width="3" stroke-linejoin="round"/>
+
+    <text x="30" y="268" font-size="14" font-weight="800">Snapshots (commits) on your Mac</text>
+    <g id="macSnaps"></g>
+
+    <!-- push / pull arrows -->
+    <g id="pushArrow" class="hot" data-term="push">
+      <rect x="366" y="66" width="160" height="56" fill="transparent"/>
+      <path d="M374 108 H516" stroke="#4D96FF" stroke-width="7" stroke-linecap="round" marker-end="url(#arSky)" fill="none"/>
+      <text x="445" y="90" text-anchor="middle" class="b" font-size="22" style="fill:#2F6FD6">Push</text>
+      <text x="445" y="128" text-anchor="middle" font-size="12.5" font-weight="800">send snapshots up</text>
+    </g>
+    <g id="pullArrow" class="hot" data-term="pull">
+      <rect x="366" y="146" width="160" height="62" fill="transparent"/>
+      <path d="M516 166 H374" stroke="#6BCB77" stroke-width="7" stroke-linecap="round" marker-end="url(#arMint)" fill="none"/>
+      <text x="445" y="194" text-anchor="middle" class="b" font-size="22" style="fill:#3A9A47">Pull</text>
+      <text x="445" y="210" text-anchor="middle" font-size="12.5" font-weight="800">bring changes down</text>
+    </g>
+
+    <!-- GitHub cloud -->
+    <g id="cloud" class="hot" data-term="gitvsgithub">
+      <path d="M580 214 a50 50 0 0 1 0 -100 a70 70 0 0 1 120 -50 a60 60 0 0 1 110 30 a50 50 0 0 1 10 120 Z" fill="#DCEBFF" stroke="#1E1B2E" stroke-width="4" stroke-linejoin="round"/>
+      <text x="700" y="118" text-anchor="middle" class="b" font-size="30">GitHub</text>
+      <text x="700" y="138" text-anchor="middle" font-size="13" font-weight="800">your vault, backed up online</text>
+    </g>
+    <g id="cloudSnaps"></g>
+
+    <!-- clone -->
+    <g id="cloneArrow" class="hot" data-term="clone">
+      <rect x="720" y="214" width="160" height="100" fill="transparent"/>
+      <path d="M790 222 C 805 262, 835 272, 872 270" stroke="#9B5DE5" stroke-width="7" stroke-linecap="round" marker-end="url(#arGrape)" fill="none"/>
+      <text x="792" y="290" text-anchor="end" class="b" font-size="22" style="fill:#7A3FC7">Clone</text>
+      <text x="792" y="306" text-anchor="end" font-size="12.5" font-weight="800">full copy</text>
+    </g>
+    <g id="newMac" class="hot" data-term="clone">
+      <rect x="885" y="222" width="150" height="90" rx="12" fill="#fff" stroke="#1E1B2E" stroke-width="4"/>
+      <text x="960" y="242" text-anchor="middle" class="b" font-size="15">New Mac</text>
+      <path d="M875 312 H1045 L1035 324 H885 Z" fill="#E9E2D8" stroke="#1E1B2E" stroke-width="3" stroke-linejoin="round"/>
+    </g>
+    <g class="step" data-from="4" id="newVault">
+      <rect x="900" y="248" width="120" height="40" rx="9" fill="#F0E6FF" stroke="#1E1B2E" stroke-width="2.5"/>
+      <text x="960" y="265" text-anchor="middle" font-size="12.5" font-weight="800">vault copy</text>
+      <text x="960" y="281" text-anchor="middle" font-size="11" font-weight="700">every snapshot too</text>
+    </g>
+    <g class="step" data-from="5">
+      <rect x="902" y="292" width="116" height="17" rx="8.5" fill="#FF6B6B" stroke="#1E1B2E" stroke-width="2"/>
+      <text x="960" y="305" text-anchor="middle" font-size="11" font-weight="800" style="fill:#fff">edited agents.md</text>
+    </g>
+
+    <line x1="20" y1="342" x2="1032" y2="342" stroke="#1E1B2E" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round" opacity=".5"/>
+
+    <!-- ===== Section 2: trying ideas safely ===== -->
+    <rect x="20" y="358" width="214" height="32" rx="16" fill="#1E1B2E"/>
+    <text x="127" y="380" text-anchor="middle" class="b" font-size="17" style="fill:#fff">Trying ideas safely</text>
+
+    <g id="mainLine" class="hot" data-term="branch">
+      <rect x="40" y="415" width="730" height="50" fill="transparent"/>
+      <text x="50" y="433" font-size="15" font-weight="800">main <tspan font-weight="700" opacity=".7">(the official version)</tspan></text>
+      <path d="M50 450 H758" stroke="#1E1B2E" stroke-width="6" stroke-linecap="round" marker-end="url(#arInk)" fill="none"/>
+      <circle cx="100" cy="450" r="11" fill="#fff" stroke="#1E1B2E" stroke-width="4"/>
+      <circle cx="165" cy="450" r="11" fill="#fff" stroke="#1E1B2E" stroke-width="4"/>
+      <circle cx="230" cy="450" r="11" fill="#fff" stroke="#1E1B2E" stroke-width="4"/>
+    </g>
+
+    <g id="branchGrp" class="hot" data-term="branch">
+      <path class="draw" data-from="6" pathLength="1" d="M230 450 C 280 450, 270 540, 330 540 L 560 540" stroke="#9B5DE5" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <g class="step" data-from="6">
+        <rect x="300" y="470" width="270" height="50" fill="transparent"/>
+        <text x="330" y="512" font-size="15" font-weight="800" style="fill:#7A3FC7">Branch: <tspan class="m" font-size="14">try-new-intro</tspan></text>
+      </g>
+    </g>
+    <g id="branchCommits" class="hot step" data-from="7" data-term="commit">
+      <circle cx="400" cy="540" r="11" fill="#E4D2FA" stroke="#1E1B2E" stroke-width="4"/>
+      <circle cx="490" cy="540" r="11" fill="#E4D2FA" stroke="#1E1B2E" stroke-width="4"/>
+    </g>
+    <g id="mergeGrp" class="hot" data-term="merge">
+      <path class="draw" data-from="9" pathLength="1" d="M560 540 C 620 540, 620 450, 680 450" stroke="#6BCB77" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <g class="step" data-from="9">
+        <rect x="630" y="465" width="140" height="60" fill="transparent"/>
+        <circle cx="680" cy="450" r="13" fill="#6BCB77" stroke="#1E1B2E" stroke-width="4"/>
+        <text x="682" y="498" class="b" font-size="21" style="fill:#3A9A47">Merge</text>
+        <text x="682" y="514" font-size="12" font-weight="800">idea joins main</text>
+      </g>
+    </g>
+    <g id="prCard" class="hot step" data-from="8" data-term="pullrequest">
+      <rect x="330" y="570" width="330" height="58" rx="16" fill="#FFF3C4" stroke="#1E1B2E" stroke-width="3"/>
+      <path d="M346 584 h34 a6 6 0 0 1 6 6 v14 a6 6 0 0 1 -6 6 h-20 l-8 8 v-8 h-6 a6 6 0 0 1 -6 -6 v-14 a6 6 0 0 1 6 -6 Z" fill="#FFD93D" stroke="#1E1B2E" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="363" y="602" text-anchor="middle" class="b" font-size="15">?</text>
+      <text x="398" y="594" font-size="16" class="b">Pull request</text>
+      <text x="398" y="614" font-size="13.5" font-weight="700">"Please review my new intro"</text>
+      <g class="step" data-from="9"><circle cx="634" cy="599" r="13" fill="#6BCB77" stroke="#1E1B2E" stroke-width="3"/><path d="M627 599 l5 5 l9 -10" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+    </g>
+
+    <!-- conflict -->
+    <g id="conflictBox" class="hot" data-term="conflict">
+      <rect x="790" y="358" width="246" height="276" rx="20" fill="#FFECEC" stroke="#1E1B2E" stroke-width="3"/>
+      <text x="806" y="386" class="b" font-size="21" style="fill:#D94545">Conflict</text>
+      <text x="1020" y="385" text-anchor="end" font-size="12" font-weight="800">same line, two edits</text>
+      <g class="step" data-from="10" id="clash">
+        <rect x="804" y="398" width="200" height="54" rx="12" fill="#fff" stroke="#4D96FF" stroke-width="3"/>
+        <text x="816" y="418" font-size="12" font-weight="800" style="fill:#2F6FD6">Your Mac, line 3:</text>
+        <text x="816" y="439" font-size="13.5" font-weight="700">"I speak slowly and calmly."</text>
+        <rect x="804" y="460" width="200" height="54" rx="12" fill="#fff" stroke="#9B5DE5" stroke-width="3"/>
+        <text x="816" y="480" font-size="12" font-weight="800" style="fill:#7A3FC7">New Mac, line 3:</text>
+        <text x="816" y="501" font-size="13.5" font-weight="700">"I speak with big energy!"</text>
+        <path d="M1022 428 L1008 458 L1020 458 L1010 488 L1032 452 L1019 452 L1028 428 Z" fill="#FFD93D" stroke="#1E1B2E" stroke-width="2.5" stroke-linejoin="round"/>
+      </g>
+      <g class="step" data-from="11" id="resolved">
+        <path d="M904 516 v10" stroke="#1E1B2E" stroke-width="3" marker-end="url(#arInk)"/>
+        <rect x="804" y="534" width="218" height="86" rx="12" fill="#E3F6E6" stroke="#6BCB77" stroke-width="3"/>
+        <text x="816" y="554" font-size="12" font-weight="800" style="fill:#3A9A47">Claude helps you blend:</text>
+        <text x="816" y="575" font-size="13.5" font-weight="700">"I speak calmly, with</text>
+        <text x="816" y="593" font-size="13.5" font-weight="700">bursts of energy."</text>
+        <text x="816" y="611" font-size="11.5" font-weight="800">saved as a new commit</text>
+        <circle cx="1000" cy="590" r="12" fill="#6BCB77" stroke="#1E1B2E" stroke-width="3"/>
+        <path d="M994 590 l4 4 l8 -9" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+    </g>
+
+    <!-- traveler -->
+    <g id="traveler" style="display:none;pointer-events:none"></g>
+  </svg>
+  </div>
+
+  <div id="playbar">
+    <button class="btn" id="play">&#9654; Play</button>
+    <button class="btn" id="back">&#8592; Back</button>
+    <button class="btn" id="next">Next &#8594;</button>
+    <div id="counter">Overview</div>
+    <div id="caption">Click any word or picture to learn it, or press Play to watch one change travel from your Mac to GitHub.</div>
+  </div>
+
+  <div id="side">
+    <h3 class="baloo">Tap a word</h3>
+    <div id="chips"></div>
+    <div id="card">
+      <div id="cardHead"><h2 id="cardTitle"></h2><span id="cardWhere"></span></div>
+      <div id="cardBody"></div>
+    </div>
+  </div>
+
+  <div id="footer"><span>Prepared for Karen. Please don't share.</span><span>Golden rule: Pull before you start. Commit and Push when you finish.</span></div>
+</div>
+
+<script>
+(function(){
+  var C = {coral:'#FF6B6B', yellow:'#FFD93D', mint:'#6BCB77', sky:'#4D96FF', grape:'#9B5DE5', ink:'#1E1B2E'};
+
+  var TERMS = {
+    start:{name:'Start here', color:C.yellow, where:'',
+      meaning:'Every word here is something Claude can do for you. Click any word or picture to see what it means, or press Play to watch a change travel.',
+      like:'Git is a camera for your vault. Each photo (a commit) remembers exactly how your files looked, so you can always go back.',
+      cmd:'<span class="c"># Start of the day</span>\ngit pull\n<span class="c"># End of the day</span>\ngit commit, then git push',
+      say:'Claude, pull the latest from GitHub. When we finish, commit and push my changes.'},
+    repo:{name:'Repo', color:C.yellow, where:'Your Mac + GitHub',
+      meaning:'Short for repository. It is your vault folder (profile.md, voiceover.md, agents.md) plus a hidden memory of every saved version.',
+      like:'Your retreat binder that also keeps every old version of every page, so nothing is ever truly lost.',
+      cmd:'git status   <span class="c"># what changed?</span>',
+      say:'Claude, check my vault repo and tell me what has changed since my last save.'},
+    commit:{name:'Commit', color:C.coral, where:'Your Mac',
+      meaning:'A saved snapshot of your files at one moment, with a short note saying what changed. You can always go back to it.',
+      like:'Taking a dated photo of your journal page and writing on the back: "Added my calm tone rule."',
+      cmd:'git add voiceover.md\ngit commit -m "Add calm tone rule"',
+      say:'Claude, save my changes as a commit with a short note about what I changed.'},
+    push:{name:'Push', color:C.sky, where:'Mac to GitHub',
+      meaning:'Sends your new snapshots from your Mac up to GitHub, so they are backed up online. Only committed changes go up, so commit first.',
+      like:'Uploading your new photos to the shared retreat album online.',
+      cmd:'git push',
+      say:'Claude, save my changes with a short note and push them to GitHub.'},
+    pull:{name:'Pull', color:C.mint, where:'GitHub to Mac',
+      meaning:'Brings new snapshots down from GitHub and adds them to the files on your Mac. Good habit: pull before you start working.',
+      like:'Before the retreat, adding the new pages your co-host put in the shared album into your own binder.',
+      cmd:'git pull',
+      say:'Claude, pull the latest changes from GitHub before we start.'},
+    clone:{name:'Clone', color:C.grape, where:'GitHub to a new computer',
+      meaning:'Downloads a full copy of a repo from GitHub onto a computer, with all its history. You only do this once per new computer. After that, you pull.',
+      like:'Photocopying the whole retreat binder, every old version included, for a new assistant.',
+      cmd:'git clone https://github.com/your-name/vault.git',
+      say:'Claude, clone my vault from GitHub onto this Mac.'},
+    branch:{name:'Branch', color:C.grape, where:'Mac or GitHub',
+      meaning:'A safe side copy where you try an idea. The official version (called main) stays untouched until you decide to keep the idea.',
+      like:'Sketching a new morning routine in a draft notebook, so the official retreat plan stays clean.',
+      cmd:'git switch -c try-new-intro',
+      say:'Claude, make a new branch called try-new-intro so I can test an idea safely.'},
+    pullrequest:{name:'Pull request', color:C.yellow, where:'GitHub website',
+      meaning:'A page on GitHub that says "please review my change before it joins main". It shows every line that changed. Not the same as Pull! It is a GitHub feature, not part of Git itself.',
+      like:'Handing your draft to your co-host: "Can you look this over before we add it to the plan?"',
+      cmd:'gh pr create   <span class="c"># gh = GitHub\'s helper</span>',
+      say:'Claude, open a pull request for this branch and explain the change in simple words.'},
+    merge:{name:'Merge', color:C.mint, where:'GitHub or Mac',
+      meaning:'Joins the changes from a branch back into main. After merging, the idea is part of the official version.',
+      like:'Copying the approved draft pages into the main retreat plan.',
+      cmd:'gh pr merge\n<span class="c"># or on the Mac: git merge try-new-intro</span>',
+      say:'Claude, the pull request looks good. Please merge it into main.'},
+    conflict:{name:'Conflict', color:C.coral, where:'When two edits meet',
+      meaning:'Two edits changed the same line in different ways, for example on two computers. Git will not guess which one you want, so it stops and asks. Nothing is lost.',
+      like:'Two helpers rewrote the same line of the retreat schedule. Someone has to choose one, or blend them.',
+      cmd:'git status   <span class="c"># which files clash?</span>\n<span class="c"># fix the line, then:</span>\ngit add voiceover.md\ngit commit',
+      say:'Claude, there is a conflict. Show me both versions side by side and help me choose.'},
+    gitvsgithub:{name:'Git vs GitHub', color:C.sky, where:'',
+      meaning:'Git is the tool on your Mac that takes the snapshots. GitHub is the website that keeps a copy online and adds extras like pull requests.',
+      like:'Git is your camera. GitHub is the online photo album you share.',
+      cmd:'git remote -v   <span class="c"># which GitHub repo?</span>',
+      say:'Claude, is my vault connected to GitHub? Which repo is it linked to?'}
+  };
+  var ORDER = ['repo','commit','push','pull','clone','branch','pullrequest','merge','conflict','gitvsgithub'];
+
+  /* ---------- snapshots (polaroids) ---------- */
+  var NS='http://www.w3.org/2000/svg';
+  function el(tag, attrs, parent){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+  function polaroid(parent, x, y, color, label){
+    var g=el('g',{transform:'translate('+x+' '+y+')'},parent);
+    el('rect',{x:0,y:0,width:50,height:44,rx:8,fill:'#fff',stroke:C.ink,'stroke-width':3},g);
+    el('rect',{x:6,y:6,width:38,height:20,rx:4,fill:color},g);
+    el('circle',{cx:25,cy:16,r:5,fill:'#fff',stroke:C.ink,'stroke-width':2},g);
+    var t=el('text',{x:25,y:39,'text-anchor':'middle','font-size':11,'font-weight':800},g);t.textContent=label;
+    return g;
+  }
+  var SNAP=[{c:C.yellow,l:'#1'},{c:C.sky,l:'#2'},{c:C.coral,l:'#3'},{c:C.grape,l:'#4'}];
+  var macSnaps=document.getElementById('macSnaps'), cloudSnaps=document.getElementById('cloudSnaps');
+  var macX=[30,88,146,204], cloudX=[590,648,706,764];
+  var macFrom=[null,null,2,5], cloudFrom=[null,null,3,5];
+  SNAP.forEach(function(s,i){
+    var g=polaroid(macSnaps,macX[i],276,s.c,s.l); g.classList.add('hot'); g.setAttribute('data-term','commit');
+    if(macFrom[i]!==null){g.classList.add('step');g.setAttribute('data-from',macFrom[i]);}
+    var h=polaroid(cloudSnaps,cloudX[i],152,s.c,s.l); h.classList.add('hot'); h.setAttribute('data-term','push');
+    if(cloudFrom[i]!==null){h.classList.add('step');h.setAttribute('data-from',cloudFrom[i]);}
+  });
+  var traveler=document.getElementById('traveler');
+
+  /* ---------- steps ---------- */
+  var STEPS=[
+    {term:'repo', glow:['mac'], text:'This is your vault folder on your Mac. In Git words it is a repo: a folder that remembers its history.'},
+    {term:'repo', glow:['mac'], text:'You change voiceover.md. Right now the change lives only on your Mac, and it is not saved in the history yet.'},
+    {term:'commit', glow:['macSnaps'], text:'Commit: Claude takes snapshot #3 of the change, with a short note: "Add calm tone rule".',
+      flash:true, path:[[190,164],[171,298]], color:C.coral},
+    {term:'push', glow:['pushArrow','cloudSnaps'], text:'Push: snapshot #3 travels up to GitHub. Now it is backed up online.',
+      path:[[171,298],[374,108],[516,108],[731,174]], color:C.coral},
+    {term:'clone', glow:['cloneArrow','newMac'], text:'Clone: on a new Mac, Claude downloads a full copy of the vault, with every snapshot.',
+      path:[[760,205],[960,276]], color:C.grape, folder:true},
+    {term:'pull', glow:['pullArrow','macSnaps'], text:'On the new Mac you edit agents.md, commit and push (#4). Back on your Mac, Pull brings #4 down.',
+      path:[[960,276],[789,174],[516,166],[374,166],[229,298]], color:C.grape},
+    {term:'branch', glow:['branchGrp'], text:'Branch: a safe side path called try-new-intro. main stays exactly as it was.'},
+    {term:'commit', glow:['branchCommits'], text:'You save snapshots (commits) on the branch while you play with the idea. They do not touch main.'},
+    {term:'pullrequest', glow:['prCard'], text:'Pull request: "Please review my change." You or a helper look at every changed line on GitHub.'},
+    {term:'merge', glow:['mergeGrp'], text:'Merge: the approved idea joins main. Now it is part of the official version.'},
+    {term:'conflict', glow:['conflictBox'], text:'Conflict: your two Macs changed the same line in different ways. Git stops and asks which one to keep.'},
+    {term:'conflict', glow:['conflictBox'], text:'Claude shows you both versions. You choose or blend them, and Claude saves the fix as a new commit.'}
+  ];
+  var LAST=STEPS.length-1;
+  var step=-1, timer=null, anim=null;
+
+  function setVisible(n, delayFor, delay){
+    document.querySelectorAll('[data-from]').forEach(function(e){
+      var f=+e.getAttribute('data-from'); var on = n>=f;
+      var d = (delayFor!==null && f===delayFor) ? delay : 0;
+      e.style.transitionDelay = d? d+'ms':'0ms';
+      if(e.classList.contains('draw')){e.classList.toggle('off',!on);e.classList.toggle('on',on);}
+      else e.classList.toggle('off',!on);
+    });
+  }
+  function clearGlow(){document.querySelectorAll('.glow').forEach(function(e){e.classList.remove('glow');});}
+
+  function runTraveler(s){
+    if(anim){cancelAnimationFrame(anim);anim=null;}
+    traveler.innerHTML=''; traveler.style.display='none';
+    if(!s.path) return 0;
+    if(s.folder){
+      el('rect',{x:-28,y:-18,width:56,height:36,rx:7,fill:'#F0E6FF',stroke:C.ink,'stroke-width':3},traveler);
+      el('path',{d:'M-28 -12 v-8 h20 l6 6',fill:'none',stroke:C.ink,'stroke-width':3},traveler);
+    } else {
+      var g=polaroid(traveler,-25,-22,s.color,''); 
+    }
+    var pts=s.path, segs=[], total=0;
+    for(var i=1;i<pts.length;i++){var dx=pts[i][0]-pts[i-1][0],dy=pts[i][1]-pts[i-1][1],L=Math.hypot(dx,dy);segs.push(L);total+=L;}
+    var dur=Math.min(1900, 500+total*1.6), t0=null;
+    traveler.style.display='';
+    function frame(ts){
+      if(t0===null)t0=ts; var p=Math.min(1,(ts-t0)/dur); var e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+      var d=e*total, i=0; while(i<segs.length-1 && d>segs[i]){d-=segs[i];i++;}
+      var r=segs[i]?d/segs[i]:1; var x=pts[i][0]+(pts[i+1][0]-pts[i][0])*r, y=pts[i][1]+(pts[i+1][1]-pts[i][1])*r;
+      traveler.setAttribute('transform','translate('+x+' '+y+')');
+      if(p<1) anim=requestAnimationFrame(frame); else {traveler.style.display='none';anim=null;}
+    }
+    anim=requestAnimationFrame(frame);
+    return dur;
+  }
+
+  function goto(n, animate){
+    step=n;
+    clearGlow();
+    var counter=document.getElementById('counter'), cap=document.getElementById('caption');
+    if(n<0){
+      if(anim){cancelAnimationFrame(anim);anim=null;traveler.style.display='none';}
+      setVisible(LAST,null,0);
+      counter.textContent='Overview';
+      cap.textContent='Click any word or picture to learn it, or press Play to watch one change travel from your Mac to GitHub.';
+      document.getElementById('back').disabled=true;
+      return;
+    }
+    var s=STEPS[n];
+    var dur = animate ? runTraveler(s) : (runTraveler({}),0);
+    setVisible(n, animate? n : null, dur);
+    if(animate && s.flash){var f=document.getElementById('flash');f.classList.remove('go');void f.getBBox();f.classList.add('go');}
+    s.glow.forEach(function(id){var e=document.getElementById(id); if(e){ if(e.classList.contains('hot')) e.classList.add('glow'); else e.querySelectorAll('.hot').forEach(function(c){c.classList.add('glow');}); }});
+    counter.textContent='Step '+(n+1)+' of '+STEPS.length;
+    cap.textContent=s.text;
+    showCard(s.term);
+    document.getElementById('back').disabled=(n<=0);
+    document.getElementById('next').disabled=(n>=LAST);
+  }
+
+  /* ---------- play controls ---------- */
+  var playBtn=document.getElementById('play');
+  function stopPlay(){ if(timer){clearInterval(timer);timer=null;} playBtn.innerHTML='&#9654; Play'; }
+  function startPlay(){
+    if(step<0||step>=LAST) goto(0,true);
+    playBtn.innerHTML='&#10074;&#10074; Pause';
+    timer=setInterval(function(){ if(step>=LAST){stopPlay();return;} goto(step+1,true); }, 4200);
+  }
+  playBtn.addEventListener('click',function(){ timer?stopPlay():startPlay(); });
+  document.getElementById('next').addEventListener('click',function(){ stopPlay(); if(step<LAST) goto(step+1,true); });
+  document.getElementById('back').addEventListener('click',function(){ stopPlay(); if(step>0) goto(step-1,false); });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'){document.getElementById('next').click();}
+    else if(e.key==='ArrowLeft'){document.getElementById('back').click();}
+    else if(e.key===' '){e.preventDefault();playBtn.click();}
+  });
+
+  /* ---------- cards ---------- */
+  var chips=document.getElementById('chips');
+  ORDER.forEach(function(k){
+    var b=document.createElement('button'); b.className='chip'+(k==='gitvsgithub'?' wide':''); b.dataset.term=k;
+    b.innerHTML='<i style="background:'+TERMS[k].color+'"></i>'+TERMS[k].name; chips.appendChild(b);
+    b.addEventListener('click',function(){ stopPlay(); showCard(k, true); });
+  });
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function showCard(k, fromClick){
+    var t=TERMS[k]; if(fromClick) clearGlow();
+    document.getElementById('cardTitle').textContent=t.name;
+    var head=document.getElementById('cardHead'); head.style.background=t.color;
+    var w=document.getElementById('cardWhere'); w.textContent=t.where; w.style.display=t.where?'':'none';
+    document.getElementById('cardBody').innerHTML=
+      '<h4>What it means</h4><p>'+esc(t.meaning)+'</p>'+
+      '<h4>It\'s like...</h4><p>'+esc(t.like)+'</p>'+
+      '<h4>What Claude runs (you never type this)</h4><pre>'+t.cmd+'</pre>'+
+      '<div class="say"><h4>Say this to Claude</h4><p>"'+esc(t.say)+'"</p><button id="copy">Copy</button></div>';
+    document.getElementById('copy').addEventListener('click',function(){
+      var btn=this; var txt=t.say;
+      function done(){btn.textContent='Copied!';setTimeout(function(){btn.textContent='Copy';},1400);}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,function(){fallback();});} else fallback();
+      function fallback(){var a=document.createElement('textarea');a.value=txt;document.body.appendChild(a);a.select();try{document.execCommand('copy');done();}catch(e){}a.remove();}
+    });
+    document.querySelectorAll('.chip').forEach(function(c){c.classList.toggle('active',c.dataset.term===k);});
+    document.querySelectorAll('.hot.selected').forEach(function(e){e.classList.remove('selected');});
+    if(fromClick){ document.querySelectorAll('.hot[data-term="'+k+'"]').forEach(function(e){ if(!e.classList.contains('off')) e.classList.add('selected'); }); }
+  }
+  document.querySelectorAll('#scene .hot').forEach(function(e){
+    e.addEventListener('click',function(ev){ ev.stopPropagation(); stopPlay(); showCard(e.getAttribute('data-term'), true); });
+  });
+
+  /* ---------- fit to screen ---------- */
+  function fit(){
+    var s=Math.min(window.innerWidth/1600, window.innerHeight/900);
+    var st=document.getElementById('stage');
+    st.style.transform='translate('+((window.innerWidth-1600*s)/2)+'px,'+((window.innerHeight-900*s)/2)+'px) scale('+s+')';
+  }
+  window.addEventListener('resize',fit); fit();
+
+  goto(-1); showCard('start');
+  window.__gh={goto:goto, steps:STEPS.length, showCard:showCard, terms:Object.keys(TERMS)};
+})();
+</script>
+</body>
+</html>

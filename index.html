@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Karen's AI Session Simulators</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FFF8F0;
+      --ink: #1E1B2E;
+      --coral: #FF6B6B;
+      --yellow: #FFD93D;
+      --mint: #6BCB77;
+      --sky: #4D96FF;
+      --grape: #9B5DE5;
+      --card: #ffffff;
+      --mute: #5C5670;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Nunito", system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 48px 24px 28px;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .eyebrow {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--ink);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 2px solid var(--ink);
+    }
+    h1 {
+      font-family: "Baloo 2", sans-serif;
+      font-weight: 800;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.1;
+      margin: 16px 0 10px;
+    }
+    h1 span { color: var(--coral); }
+    .lede {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--mute);
+      max-width: 40rem;
+      margin: 0;
+    }
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 8px 24px 48px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 22px;
+    }
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border: 2px solid var(--ink);
+      border-radius: 18px;
+      padding: 22px 22px 18px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: 6px 6px 0 var(--ink);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      overflow: hidden;
+      min-height: 240px;
+    }
+    .card:hover, .card:focus-visible {
+      transform: translate(-3px, -3px);
+      box-shadow: 9px 9px 0 var(--ink);
+      outline: none;
+    }
+    .card .bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 10px;
+      background: var(--sky);
+    }
+    .card[data-type="html"] .bar { background: var(--sky); }
+    .card[data-type="svg"] .bar { background: var(--grape); }
+    .card[data-type="png"] .bar { background: var(--mint); }
+    .card[data-type="pdf"] .bar { background: var(--coral); }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0 14px;
+    }
+    .badge {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 2px solid var(--ink);
+    }
+    .badge.session { background: var(--yellow); }
+    .badge.type-html { background: #E8F1FF; color: #1a5fcc; }
+    .badge.type-svg { background: #F3E8FF; color: #6d2cb8; }
+    .badge.type-png { background: #E7F8EA; color: #1f7a2f; }
+    .badge.type-pdf { background: #FFE8E8; color: #c23b3b; }
+    .card h2 {
+      font-family: "Baloo 2", sans-serif;
+      font-weight: 700;
+      font-size: 1.45rem;
+      line-height: 1.2;
+      margin: 0 0 10px;
+    }
+    .card p {
+      margin: 0;
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--mute);
+      line-height: 1.45;
+      flex: 1;
+    }
+    .card .foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+      gap: 10px;
+    }
+    .added {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--mute);
+    }
+    .open {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--mint);
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      padding: 5px 12px;
+    }
+    footer {
+      text-align: center;
+      padding: 16px 24px 28px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--mute);
+    }
+    .empty {
+      background: var(--card);
+      border: 2px dashed var(--ink);
+      border-radius: 18px;
+      padding: 32px;
+      font-weight: 700;
+      color: var(--mute);
+    }
+    noscript p {
+      margin: 0 0 16px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="eyebrow">AI, Your Way</span>
+    <h1>Karen's AI Session <span>Simulators</span></h1>
+    <p class="lede">Click a card to open a simulator in a new tab. These pages are for your classes. Please don't share them.</p>
+  </header>
+  <main>
+    <noscript>
+      <p>JavaScript is off, so here is the list of simulators.</p>
+    </noscript>
+    <div id="grid" class="grid">
+      <a class="card" href="simulators/herdr-orchestra.html" target="_blank" rel="noopener noreferrer" data-type="html">
+        <span class="bar" aria-hidden="true"></span>
+        <div class="meta">
+          <span class="badge session">Session 6</span>
+          <span class="badge type type-html">html</span>
+        </div>
+        <h2>How herdr connects your agents</h2>
+        <p>Click through how herdr talks to Claude and the other agents, and why the herdr skill has to be in place first.</p>
+        <div class="foot">
+          <span class="added">Added 25 Nov 2026</span>
+          <span class="open">Open</span>
+        </div>
+      </a>
+      <a class="card" href="simulators/github-plain-words.html" target="_blank" rel="noopener noreferrer" data-type="html">
+        <span class="bar" aria-hidden="true"></span>
+        <div class="meta">
+          <span class="badge session">Session 6</span>
+          <span class="badge type type-html">html</span>
+        </div>
+        <h2>GitHub in plain words</h2>
+        <p>The words you can say to Claude when you want it to pull, commit, push, or open a pull request. No commands to memorise.</p>
+        <div class="foot">
+          <span class="added">Added 25 Nov 2026</span>
+          <span class="open">Open</span>
+        </div>
+      </a>
+      <a class="card" href="simulators/voiceover-trainer.html" target="_blank" rel="noopener noreferrer" data-type="html">
+        <span class="bar" aria-hidden="true"></span>
+        <div class="meta">
+          <span class="badge session">Session 6</span>
+          <span class="badge type type-html">html</span>
+        </div>
+        <h2>Your voiceover trainer</h2>
+        <p>The loop that trains an agent on your voice: your writing on the left, the AI draft on the right, a judge score, and your yes or no.</p>
+        <div class="foot">
+          <span class="added">Added 25 Nov 2026</span>
+          <span class="open">Open</span>
+        </div>
+      </a>
+    </div>
+  </main>
+  <footer>Prepared for Karen. Please don't share.</footer>
+  <script>
+    (function () {
+      const grid = document.getElementById("grid");
+      const typeClass = (t) => "type-" + String(t || "html").toLowerCase();
+      const formatAdded = (iso) => {
+        if (!iso) return "";
+        const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        const p = String(iso).split("-");
+        if (p.length < 3) return iso;
+        return Number(p[2]) + " " + months[Number(p[1]) - 1] + " " + p[0];
+      };
+      const card = (item) => {
+        const typ = String(item.type || "html").toLowerCase();
+        const file = String(item.file || "");
+        const href = "simulators/" + file.replace(/^\/+/, "");
+        const title = item.title || file;
+        const desc = item.description || "";
+        const session = item.session || "";
+        const added = formatAdded(item.added);
+        const a = document.createElement("a");
+        a.className = "card";
+        a.href = href;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.setAttribute("data-type", typ);
+        a.innerHTML =
+          '<span class="bar" aria-hidden="true"></span>' +
+          '<div class="meta">' +
+            (session ? '<span class="badge session">Session ' + session + "</span>" : "") +
+            '<span class="badge type ' + typeClass(typ) + '">' + typ + "</span>" +
+          "</div>" +
+          "<h2></h2>" +
+          "<p></p>" +
+          '<div class="foot"><span class="added"></span><span class="open">Open</span></div>';
+        a.querySelector("h2").textContent = title;
+        a.querySelector("p").textContent = desc;
+        a.querySelector(".added").textContent = added ? "Added " + added : "";
+        return a;
+      };
+      fetch("simulators.json", { cache: "no-store" })
+        .then((res) => {
+          if (!res.ok) throw new Error("bad status");
+          return res.json();
+        })
+        .then((items) => {
+          if (!Array.isArray(items) || !items.length) return;
+          grid.innerHTML = "";
+          items.forEach((item) => grid.appendChild(card(item)));
+        })
+        .catch(function () {
+          // Keep the static cards already in the page.
+        });
+    })();
+  </script>
+</body>
+</html>

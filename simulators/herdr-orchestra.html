@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your agent orchestra (herdr) | AI, Your Way</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFF8F0;--ink:#1E1B2E;--coral:#FF6B6B;--yel:#FFD93D;--mint:#6BCB77;--sky:#4D96FF;--grape:#9B5DE5}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,system-ui,sans-serif}
+body{height:100vh;display:flex;flex-direction:column;padding:14px 24px 8px;gap:12px;overflow:hidden}
+h1,h2,h3{font-family:"Baloo 2",system-ui,sans-serif;margin:0;line-height:1.1}
+code,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+header{display:flex;align-items:center;gap:18px;flex:0 0 auto}
+.logo{width:52px;height:52px;flex:0 0 52px}
+header h1{font-size:32px;font-weight:800}
+header p{margin:2px 0 0;font-size:16px;font-weight:700;opacity:.8}
+.spacer{flex:1}
+.toggle{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;cursor:pointer;border:3px solid var(--ink);border-radius:999px;padding:6px 14px 6px 8px;background:#fff;user-select:none}
+.toggle:hover{background:#FFF3C4}
+.sw{width:52px;height:28px;border-radius:999px;border:3px solid var(--ink);background:var(--sky);position:relative;transition:background .2s}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;border:2.5px solid var(--ink);transition:left .2s}
+.toggle[aria-pressed="true"] .sw{background:var(--grape)}
+.toggle[aria-pressed="true"] .sw::after{left:26px}
+main{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:16px}
+.card{background:#fff;border:4px solid var(--ink);border-radius:24px}
+.stage{display:flex;flex-direction:column;min-height:0;padding:10px 14px 8px}
+.controls{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.btn{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:17px;border:3px solid var(--ink);border-radius:14px;padding:4px 16px;background:#fff;color:var(--ink);cursor:pointer;line-height:1.3}
+.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 3px 0 var(--ink)}
+.btn:disabled{opacity:.35;cursor:default}
+.btn.play{background:var(--coral);color:#fff}
+.caption{flex:1;min-height:44px;display:flex;align-items:center;gap:10px;background:#FFF3C4;border:3px solid var(--ink);border-radius:14px;padding:4px 14px;font-weight:700;font-size:15.5px;line-height:1.3}
+.caption .stepno{font-family:"Baloo 2",sans-serif;font-weight:800;background:var(--ink);color:#fff;border-radius:10px;padding:1px 9px;white-space:nowrap;font-size:14px}
+.caption code{background:#fff;border:2px solid var(--ink);border-radius:7px;padding:0 5px;font-size:13.5px}
+svg#diagram{flex:1 1 auto;min-height:0;width:100%;height:100%;margin-top:6px}
+.side{display:flex;flex-direction:column;gap:12px;min-height:0;overflow:auto}
+.info{padding:16px 20px;flex:1 1 auto;min-height:0;border-color:var(--ink);transition:background .25s}
+.info .kicker{font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.06em;opacity:.65}
+.info h2{font-size:26px;margin:2px 0 6px}
+.info p{margin:0 0 9px;font-size:15.5px;line-height:1.42}
+.chip{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:13px;background:var(--ink);color:#fff;border-radius:10px;padding:5px 10px;margin:2px 0 8px;word-break:break-all}
+.say{background:#E8F7EA;border:3px solid var(--ink);border-radius:16px;padding:8px 12px;font-size:15px;font-weight:700}
+.say b{font-family:"Baloo 2",sans-serif}
+.server3{padding:12px 18px;background:var(--mint);flex:0 0 auto}
+.server3 h3{font-size:20px;margin-bottom:4px}
+.server3 ol{margin:0;padding-left:20px;font-size:14.5px;line-height:1.38;font-weight:700}
+.server3 code{font-size:13px;background:#fff;border-radius:6px;padding:0 4px}
+section.setup{flex:0 0 auto}
+.setup-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+.setup-head h2{font-size:22px}
+.setup-head span{font-weight:700;font-size:14px;opacity:.7}
+.strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.step{position:relative;padding:10px 14px 10px 62px;cursor:pointer;min-height:100px;transition:transform .15s, box-shadow .15s}
+.step:hover,.step:focus-visible,.step.lit{transform:translateY(-2px);box-shadow:0 5px 0 var(--ink);outline:none}
+.step.lit{background:#FFF3C4}
+.step .n{position:absolute;left:12px;top:12px;width:38px;height:38px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font-family:"Baloo 2",sans-serif;font-weight:800;font-size:20px}
+.step h3{font-size:18px;margin-bottom:2px}
+.step p{margin:0 0 5px;font-size:14px;line-height:1.3;font-weight:600}
+.step code{font-size:12px;background:var(--ink);color:#fff;border-radius:8px;padding:2px 7px;display:inline-block}
+.roles{display:flex;gap:6px;flex-wrap:wrap}
+.roles span{font-size:12.5px;font-weight:800;border:2px solid var(--ink);border-radius:999px;padding:1px 8px}
+footer{flex:0 0 auto;text-align:center;font-size:13px;font-weight:800;opacity:.7}
+/* SVG text */
+.t-bar{font:800 15px "Baloo 2",sans-serif;fill:var(--ink)}
+.t-mono{font:600 14px "JetBrains Mono",monospace}
+.b-line{font-size:13px;fill:var(--ink);white-space:pre}
+.t-name{font:800 26px "Baloo 2",sans-serif;fill:var(--ink)}
+.t-tag{font:800 13px Nunito,sans-serif;fill:var(--ink)}
+.t-big{font:800 40px "Baloo 2",sans-serif;fill:var(--ink)}
+.t-sub{font:800 17px "Baloo 2",sans-serif;fill:var(--ink)}
+.t-small{font:700 13px Nunito,sans-serif;fill:var(--ink)}
+.t-body{font:700 15px Nunito,sans-serif;fill:var(--ink)}
+.wire-line{stroke:var(--ink);stroke-width:3.5;stroke-dasharray:9 8;fill:none;stroke-linecap:round}
+.wire-line.thick{stroke-width:6;stroke-dasharray:none}
+.hot{cursor:pointer;transition:opacity .3s, filter .2s}
+.hot:hover,.hot:focus-visible{filter:drop-shadow(0 5px 0 rgba(30,27,46,.85));outline:none}
+.wire:hover .wire-line,.wire:focus-visible .wire-line{stroke:var(--coral)}
+.hot.sel .ol{stroke:var(--coral);stroke-width:6}
+.playing .hot.dim{opacity:.28}
+.hot.lit{filter:drop-shadow(0 0 10px rgba(255,107,107,.95))}
+.bubble{transition:opacity .3s}
+.led{animation:blink 1.4s infinite}
+@keyframes blink{50%{fill:#fff}}
+.wire-line.flow{animation:dash 1s linear infinite;stroke:var(--coral)}
+@keyframes dash{to{stroke-dashoffset:-17}}
+/* smaller screens: allow scrolling and stack */
+@media (max-height:760px),(max-width:1180px){
+  body{height:auto;overflow:auto}
+  main{grid-template-columns:1fr}
+  svg#diagram{height:auto;aspect-ratio:1040/540}
+}
+@media (max-width:900px){.strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header>
+  <svg class="logo" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23" fill="#FFD93D" stroke="#1E1B2E" stroke-width="4"/><line x1="18" y1="34" x2="36" y2="14" stroke="#1E1B2E" stroke-width="4" stroke-linecap="round"/><circle cx="37" cy="13" r="4" fill="#FF6B6B" stroke="#1E1B2E" stroke-width="2"/></svg>
+  <div>
+    <h1>Your agent orchestra</h1>
+    <p>How herdr lets your AI agents find each other and pass jobs around</p>
+  </div>
+  <div class="spacer"></div>
+  <div class="toggle" id="toggle" role="switch" tabindex="0" aria-pressed="false"><span class="sw"></span><span id="toggleLabel">Desktop app vs terminal</span></div>
+</header>
+
+<main>
+  <div class="card stage">
+    <div class="controls">
+      <button class="btn play" id="play">&#9654; Play</button>
+      <button class="btn" id="back" disabled>Back</button>
+      <button class="btn" id="next">Next</button>
+      <div class="caption" id="caption"><span class="stepno" id="stepno">Explore</span><span id="captext">Tap any box to learn what it is, or press Play to watch the agents talk.</span></div>
+    </div>
+    <svg id="diagram" viewBox="0 0 1040 540" preserveAspectRatio="xMidYMid meet" role="img" aria-label="herdr diagram">
+
+<g id="view-main">
+  <!-- connectors (drawn first) -->
+  <g class="hot wire" data-key="wires" tabindex="0" role="button" aria-label="How messages travel">
+    <path id="p-claude" d="M320 112 C 380 112, 400 150, 432 160" class="wire-line"/>
+    <path id="p-open" d="M720 112 C 660 112, 640 150, 608 160" class="wire-line"/>
+    <path id="p-agy" d="M320 380 C 392 380, 420 320, 456 248" class="wire-line"/>
+    <path id="p-server" d="M520 270 L520 360" class="wire-line thick"/>
+    <path id="p-folder" d="M720 405 C 690 405, 670 430, 640 430" class="wire-line"/>
+    <path d="M320 112 C 380 112, 400 150, 432 160 M720 112 C 660 112, 640 150, 608 160 M320 380 C 392 380, 420 320, 456 248 M520 270 L520 360 M720 405 C 690 405, 670 430, 640 430" stroke="transparent" stroke-width="22" fill="none"/>
+    <rect x="532" y="300" width="96" height="26" rx="13" fill="#fff" stroke="#1E1B2E" stroke-width="2"/>
+    <text x="580" y="318" class="t-small" text-anchor="middle">local socket</text>
+  </g>
+
+  
+<g class="hot" id="g-claude" data-key="claude" tabindex="0" role="button" aria-label="Claude">
+  <rect x="30" y="30" width="290" height="170" rx="24" fill="#FF6B6B"/>
+  <path d="M32 74 H318 V178 Q318 198 298 198 H52 Q32 198 32 178 Z" fill="#fff"/>
+  <rect class="ol" x="30" y="30" width="290" height="170" rx="24" fill="none" stroke="#1E1B2E" stroke-width="4"/>
+  <circle cx="54" cy="52" r="6" fill="#fff" stroke="#1E1B2E" stroke-width="2"/>
+  <circle cx="72" cy="52" r="6" fill="#fff" stroke="#1E1B2E" stroke-width="2"/>
+  <circle cx="90" cy="52" r="6" fill="#fff" stroke="#1E1B2E" stroke-width="2"/>
+  <text x="108" y="58" class="t-bar">pane 1</text>
+  <text x="302" y="58" class="t-mono" text-anchor="end" fill="#1E1B2E">$ claude</text>
+  <circle cx="76" cy="134" r="30" fill="#FF6B6B" stroke="#1E1B2E" stroke-width="3"/><rect x="72.5" y="108" width="7" height="20" rx="3.5" fill="#1E1B2E" transform="rotate(0 76 134)"/><rect x="72.5" y="108" width="7" height="20" rx="3.5" fill="#1E1B2E" transform="rotate(45 76 134)"/><rect x="72.5" y="108" width="7" height="20" rx="3.5" fill="#1E1B2E" transform="rotate(90 76 134)"/><rect x="72.5" y="108" width="7" height="20" rx="3.5" fill="#1E1B2E" transform="rotate(135 76 134)"/><rect x="72.5" y="108" width="7" height="20" rx="3.5" fill="#1E1B2E" transform="rotate(180 76 134)"/><rect x="72.5" y="108" width="7" height="20" rx="3.5" fill="#1E1B2E" transform="rotate(225 76 134)"/><rect x="72.5" y="108" width="7" height="20" rx="3.5" fill="#1E1B2E" transform="rotate(270 76 134)"/><rect x="72.5" y="108" width="7" height="20" rx="3.5" fill="#1E1B2E" transform="rotate(315 76 134)"/><circle cx="76" cy="134" r="7" fill="#fff" stroke="#1E1B2E" stroke-width="2.5"/>
+  <text x="118" y="126" class="t-name">Claude</text>
+  <rect x="118" y="140" width="185" height="28" rx="14" fill="#FFD93D" stroke="#1E1B2E" stroke-width="2.5"/>
+  <text x="210.5" y="159" class="t-tag" text-anchor="middle">premium, best planner</text>
+</g>
+  
+<g class="hot" id="g-opencode" data-key="opencode" tabindex="0" role="button" aria-label="opencode">
+  <rect x="720" y="30" width="290" height="170" rx="24" fill="#4D96FF"/>
+  <path d="M722 74 H1008 V178 Q1008 198 988 198 H742 Q722 198 722 178 Z" fill="#fff"/>
+  <rect class="ol" x="720" y="30" width="290" height="170" rx="24" fill="none" stroke="#1E1B2E" stroke-width="4"/>
+  <circle cx="744" cy="52" r="6" fill="#fff" stroke="#1E1B2E" stroke-width="2"/>
+  <circle cx="762" cy="52" r="6" fill="#fff" stroke="#1E1B2E" stroke-width="2"/>
+  <circle cx="780" cy="52" r="6" fill="#fff" stroke="#1E1B2E" stroke-width="2"/>
+  <text x="798" y="58" class="t-bar">pane 2</text>
+  <text x="992" y="58" class="t-mono" text-anchor="end" fill="#1E1B2E">$ opencode</text>
+  <circle cx="766" cy="134" r="30" fill="#4D96FF" stroke="#1E1B2E" stroke-width="3"/><path d="M758 122 L748 134 L758 146 M774 122 L784 134 L774 146 M770 119 L762 149" stroke="#fff" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="808" y="126" class="t-name">opencode</text>
+  <rect x="808" y="140" width="185" height="28" rx="14" fill="#FFD93D" stroke="#1E1B2E" stroke-width="2.5"/>
+  <text x="900.5" y="159" class="t-tag" text-anchor="middle">flexible, many models</text>
+</g>
+  
+<g class="hot" id="g-agy" data-key="agy" tabindex="0" role="button" aria-label="agy">
+  <rect x="30" y="320" width="290" height="170" rx="24" fill="#9B5DE5"/>
+  <path d="M32 364 H318 V468 Q318 488 298 488 H52 Q32 488 32 468 Z" fill="#fff"/>
+  <rect class="ol" x="30" y="320" width="290" height="170" rx="24" fill="none" stroke="#1E1B2E" stroke-width="4"/>
+  <circle cx="54" cy="342" r="6" fill="#fff" stroke="#1E1B2E" stroke-width="2"/>
+  <circle cx="72" cy="342" r="6" fill="#fff" stroke="#1E1B2E" stroke-width="2"/>
+  <circle cx="90" cy="342" r="6" fill="#fff" stroke="#1E1B2E" stroke-width="2"/>
+  <text x="108" y="348" class="t-bar">pane 3</text>
+  <text x="302" y="348" class="t-mono" text-anchor="end" fill="#1E1B2E">$ agy</text>
+  <circle cx="76" cy="424" r="30" fill="#9B5DE5" stroke="#1E1B2E" stroke-width="3"/><path d="M76 407 L88 426 L81 426 L81 439 L71 439 L71 426 L64 426 Z" fill="#fff" stroke="#1E1B2E" stroke-width="2.5" stroke-linejoin="round"/>
+  <text x="118" y="416" class="t-name">agy</text>
+  <rect x="118" y="430" width="132" height="28" rx="14" fill="#FFD93D" stroke="#1E1B2E" stroke-width="2.5"/>
+  <text x="184.0" y="449" class="t-tag" text-anchor="middle">Google's agent</text>
+</g>
+
+  <!-- folder -->
+  <g class="hot" id="g-folder" data-key="folder" tabindex="0" role="button" aria-label="Your project folder">
+    <rect class="ol" x="720" y="320" width="290" height="170" rx="24" fill="#FFF3C4" stroke="#1E1B2E" stroke-width="4"/>
+    <path d="M748 362 h26 l8 9 h30 a6 6 0 0 1 6 6 v36 a6 6 0 0 1 -6 6 h-64 a6 6 0 0 1 -6 -6 v-45 a6 6 0 0 1 6 -6z" fill="#FFD93D" stroke="#1E1B2E" stroke-width="3" stroke-linejoin="round"/>
+    <text x="836" y="378" class="t-name" style="font-size:22px">Your project</text>
+    <text x="836" y="402" class="t-name" style="font-size:22px">folder</text>
+    <rect x="744" y="432" width="242" height="40" rx="12" fill="#1E1B2E"/>
+    <text x="758" y="457" class="t-mono" fill="#fff">$ cd my-project</text>
+    <text x="976" y="457" class="t-mono" fill="#FFD93D" text-anchor="end">$ herdr</text>
+  </g>
+
+  <!-- server -->
+  <g class="hot" id="g-server" data-key="server" tabindex="0" role="button" aria-label="Background server">
+    <rect class="ol" x="400" y="360" width="240" height="140" rx="24" fill="#6BCB77" stroke="#1E1B2E" stroke-width="4"/>
+    <rect x="422" y="384" width="56" height="20" rx="6" fill="#fff" stroke="#1E1B2E" stroke-width="2.5"/>
+    <rect x="422" y="410" width="56" height="20" rx="6" fill="#fff" stroke="#1E1B2E" stroke-width="2.5"/>
+    <circle class="led" cx="466" cy="394" r="4" fill="#6BCB77" stroke="#1E1B2E" stroke-width="1.5"/>
+    <circle class="led" cx="466" cy="420" r="4" fill="#6BCB77" stroke="#1E1B2E" stroke-width="1.5"/>
+    <text x="492" y="400" class="t-name" style="font-size:20px">Background</text>
+    <text x="492" y="424" class="t-name" style="font-size:20px">server</text>
+    <text x="520" y="456" class="t-small" text-anchor="middle">keeps your agents alive</text>
+    <rect x="460" y="466" width="120" height="24" rx="12" fill="#fff" stroke="#1E1B2E" stroke-width="2"/>
+    <text x="520" y="483" class="t-mono" style="font-size:12px" text-anchor="middle">herdr.sock</text>
+  </g>
+
+  <!-- conductor -->
+  <g class="hot" id="g-conductor" data-key="conductor" tabindex="0" role="button" aria-label="herdr, the conductor">
+    <circle class="ol" cx="520" cy="175" r="95" fill="#FFD93D" stroke="#1E1B2E" stroke-width="4"/>
+    <line x1="548" y1="98" x2="586" y2="128" stroke="#1E1B2E" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="546" cy="97" r="6" fill="#FF6B6B" stroke="#1E1B2E" stroke-width="2.5"/>
+    <g fill="#1E1B2E"><ellipse cx="460" cy="128" rx="8" ry="6"/><rect x="465" y="100" width="3.5" height="28"/><path d="M468 100 q10 4 10 14 q-4 -6 -10 -6z"/></g>
+    <g fill="#1E1B2E"><ellipse cx="488" cy="118" rx="6" ry="4.5"/><rect x="492" y="98" width="3" height="20"/></g>
+    <text x="520" y="190" class="t-big" text-anchor="middle">herdr</text>
+    <text x="520" y="213" class="t-sub" text-anchor="middle">the conductor</text>
+    <text x="520" y="234" class="t-small" text-anchor="middle">runs agents in panes</text>
+  </g>
+
+  <!-- speech bubbles (shown during Play) -->
+  <g id="b-claude" class="bubble" opacity="0">
+    <path d="M44 212 H386 a14 14 0 0 1 14 14 V292 a14 14 0 0 1 -14 14 H44 a14 14 0 0 1 -14 -14 V226 a14 14 0 0 1 14 -14z M90 212 L104 198 L118 212z" fill="#fff" stroke="#1E1B2E" stroke-width="3" stroke-linejoin="round"/>
+    <text id="bc1" x="46" y="238" class="t-mono b-line"></text>
+    <text id="bc2" x="46" y="258" class="t-mono b-line"></text>
+    <text id="bc3" x="46" y="278" class="t-mono b-line"></text>
+    <text id="bc4" x="46" y="298" class="t-mono b-line"></text>
+  </g>
+  <g id="b-open" class="bubble" opacity="0">
+    <path d="M654 212 H996 a14 14 0 0 1 14 14 V292 a14 14 0 0 1 -14 14 H654 a14 14 0 0 1 -14 -14 V226 a14 14 0 0 1 14 -14z M920 212 L934 198 L948 212z" fill="#fff" stroke="#1E1B2E" stroke-width="3" stroke-linejoin="round"/>
+    <text id="bo1" x="658" y="240" class="t-body"></text>
+    <text id="bo2" x="658" y="262" class="t-body"></text>
+    <text id="bo3" x="658" y="284" class="t-body"></text>
+  </g>
+  <circle id="dot" r="10" fill="#FF6B6B" stroke="#1E1B2E" stroke-width="3" opacity="0"/>
+</g>
+
+<g id="view-app" style="display:none">
+  <g class="hot" data-key="tui" tabindex="0" role="button" aria-label="Terminal herdr">
+    <rect x="30" y="30" width="440" height="430" rx="24" fill="#4D96FF"/>
+    <path d="M32 84 H468 V436 Q468 458 446 458 H54 Q32 458 32 436 Z" fill="#fff"/>
+    <rect class="ol" x="30" y="30" width="440" height="430" rx="24" fill="none" stroke="#1E1B2E" stroke-width="4"/>
+    <text x="250" y="66" class="t-name" fill="#fff" text-anchor="middle" style="font-size:24px">Terminal herdr (what we use)</text>
+    <rect x="60" y="106" width="380" height="44" rx="12" fill="#1E1B2E"/>
+    <text x="78" y="134" class="t-mono" fill="#fff">$ herdr</text>
+    <text x="250" y="182" class="t-body" text-anchor="middle">its own server, talking on</text>
+    <rect x="160" y="194" width="180" height="40" rx="20" fill="#6BCB77" stroke="#1E1B2E" stroke-width="3"/>
+    <text x="250" y="220" class="t-mono" text-anchor="middle">herdr.sock</text>
+    <g>
+      <rect x="62" y="260" width="112" height="40" rx="20" fill="#FF6B6B" stroke="#1E1B2E" stroke-width="3"/><text x="118" y="286" class="t-tag" text-anchor="middle">claude</text>
+      <rect x="194" y="260" width="112" height="40" rx="20" fill="#4D96FF" stroke="#1E1B2E" stroke-width="3"/><text x="250" y="286" class="t-tag" text-anchor="middle" fill="#fff">opencode</text>
+      <rect x="326" y="260" width="112" height="40" rx="20" fill="#9B5DE5" stroke="#1E1B2E" stroke-width="3"/><text x="382" y="286" class="t-tag" text-anchor="middle" fill="#fff">agy</text>
+    </g>
+    <text x="250" y="336" class="t-body" text-anchor="middle">check it with</text>
+    <rect x="60" y="350" width="380" height="84" rx="12" fill="#1E1B2E"/>
+    <text x="78" y="384" class="t-mono" fill="#fff">$ herdr status</text>
+    <text x="78" y="414" class="t-mono" fill="#fff">$ herdr agent list</text>
+  </g>
+
+  <g class="hot" data-key="wall" tabindex="0" role="button" aria-label="Why they don't mix">
+    <g stroke="#1E1B2E" stroke-width="2.5" fill="#FF6B6B">
+      <rect x="484" y="90" width="36" height="28" rx="4"/><rect x="520" y="90" width="36" height="28" rx="4"/>
+      <rect x="484" y="118" width="18" height="28" rx="4"/><rect x="502" y="118" width="36" height="28" rx="4"/><rect x="538" y="118" width="18" height="28" rx="4"/>
+      <rect x="484" y="146" width="36" height="28" rx="4"/><rect x="520" y="146" width="36" height="28" rx="4"/>
+      <rect x="484" y="174" width="18" height="28" rx="4"/><rect x="502" y="174" width="36" height="28" rx="4"/><rect x="538" y="174" width="18" height="28" rx="4"/>
+      <rect x="484" y="202" width="36" height="28" rx="4"/><rect x="520" y="202" width="36" height="28" rx="4"/>
+    </g>
+    <circle cx="520" cy="290" r="30" fill="#fff" stroke="#FF6B6B" stroke-width="7"/>
+    <line x1="500" y1="290" x2="540" y2="290" stroke="#FF6B6B" stroke-width="8" stroke-linecap="round"/>
+    <text x="520" y="350" class="t-tag" text-anchor="middle">no bridge</text>
+    <rect x="482" y="80" width="76" height="300" fill="transparent"/>
+  </g>
+
+  <g class="hot" data-key="app" tabindex="0" role="button" aria-label="Herdr desktop app">
+    <rect x="570" y="30" width="440" height="430" rx="24" fill="#9B5DE5"/>
+    <path d="M572 84 H1008 V436 Q1008 458 986 458 H594 Q572 458 572 436 Z" fill="#fff"/>
+    <rect class="ol" x="570" y="30" width="440" height="430" rx="24" fill="none" stroke="#1E1B2E" stroke-width="4"/>
+    <text x="790" y="66" class="t-name" fill="#fff" text-anchor="middle" style="font-size:24px">Herdr desktop app</text>
+    <rect x="600" y="106" width="380" height="44" rx="12" fill="#1E1B2E"/>
+    <text x="618" y="134" class="t-mono" fill="#fff">herdr-app  (the window)</text>
+    <text x="790" y="182" class="t-body" text-anchor="middle">a separate engine and server</text>
+    <rect x="700" y="194" width="180" height="40" rx="20" fill="#E9DCFB" stroke="#1E1B2E" stroke-width="3"/>
+    <text x="790" y="220" class="t-mono" text-anchor="middle">hc</text>
+    <text x="790" y="280" class="t-body" text-anchor="middle">Agents opened here stay here.</text>
+    <text x="790" y="336" class="t-body" text-anchor="middle">it has its own commands</text>
+    <rect x="600" y="350" width="380" height="84" rx="12" fill="#1E1B2E"/>
+    <text x="618" y="384" class="t-mono" fill="#fff">$ hc server status</text>
+    <text x="618" y="414" class="t-mono" fill="#fff">$ hc ls</text>
+  </g>
+
+  <rect x="30" y="476" width="980" height="56" rx="18" fill="#FFD93D" stroke="#1E1B2E" stroke-width="3"/>
+  <text x="520" y="501" class="t-body" text-anchor="middle" style="font-weight:800">They don't share agents: what runs in one doesn't show up in the other.</text>
+  <text x="520" y="522" class="t-body" text-anchor="middle">Pick ONE. In our class we use the terminal herdr.</text>
+</g>
+
+    </svg>
+  </div>
+
+  <aside class="side">
+    <div class="card info" id="info" aria-live="polite">
+      <div class="kicker" id="infoKicker">Start here</div>
+      <h2 id="infoTitle">Tap any box</h2>
+      <div id="infoBody"><p>Every box in the picture is clickable. Tap one and its plain-words explanation shows up right here.</p><p>Or press <b>Play</b> to watch Claude find the other agents and hand opencode a job.</p></div>
+    </div>
+    <div class="card server3">
+      <h3>What the server is, in 3 lines</h3>
+      <ol>
+        <li>herdr is like a building manager: the server is the office that stays open in the background, and each pane is a room where one AI agent works.</li>
+        <li>Agents can only see and message each other through that office. If the server isn't running, nobody can find anybody.</li>
+        <li>Every session: open Terminal, type <code>herdr</code>, start your agents inside it.</li>
+      </ol>
+    </div>
+  </aside>
+</main>
+
+<section class="setup">
+  <div class="setup-head"><h2>Set up your ecosystem</h2><span>4 steps, tap one for details</span></div>
+  <div class="strip">
+    <div class="card step" data-key="s1" tabindex="0" role="button"><div class="n" style="background:var(--yel)">1</div><h3>Start herdr in a project folder</h3><p>Open Terminal, go into your folder, type herdr.</p><code>cd my-project &amp;&amp; herdr</code></div>
+    <div class="card step" data-key="s2" tabindex="0" role="button"><div class="n" style="background:var(--sky);color:#fff">2</div><h3>Open a pane per agent</h3><p>Split the window, start one agent in each pane.</p><code>claude</code> <code>opencode</code> <code>agy</code></div>
+    <div class="card step" data-key="s3" tabindex="0" role="button"><div class="n" style="background:var(--coral);color:#fff">3</div><h3>Add the herdr skill to Claude</h3><p>A little instruction sheet so Claude knows the herdr commands.</p><code>herdr --skill</code></div>
+    <div class="card step" data-key="s4" tabindex="0" role="button"><div class="n" style="background:var(--grape);color:#fff">4</div><h3>Give each agent a role</h3><p>Like seats in an orchestra:</p><div class="roles"><span style="background:#FFD6D6">Claude plans</span><span style="background:#D6E6FF">opencode writes captions</span><span style="background:#EBDDFB">agy makes flyers</span></div></div>
+  </div>
+</section>
+
+<footer>Prepared for Karen. Please don't share.</footer>
+
+<script>
+const INFO = {
+  conductor:{k:"The conductor", t:"herdr", c:"#FFF3C4", b:`<p>herdr is a program that runs inside your Mac's Terminal. It splits the window into <b>panes</b>, and each pane can hold one AI agent.</p><p>Like a conductor, herdr knows who is playing and in which seat, so the agents can find each other and pass jobs around.</p><span class="chip">herdr</span><div class="say"><b>Try saying to Claude:</b> "Use herdr to list the other agents."</div>`},
+  server:{k:"Behind the scenes", t:"The background server", c:"#E8F7EA", b:`<p>When you type <b>herdr</b>, it quietly starts a server in the background. You don't have to start it by hand.</p><p>The server keeps your agents alive and lets them see and message each other through a private connection on your own Mac (a file called <b>herdr.sock</b>). Nothing goes over the internet for this part.</p><p>Closing the Terminal window doesn't stop it. If it isn't running, nobody can find anybody.</p><span class="chip">herdr status</span>`},
+  claude:{k:"Pane 1 · premium, best planner", t:"Claude", c:"#FFE9E9", b:`<p>Claude Code runs in this pane. It's a great <b>planner</b>: it can break a big job into small ones and hand them out.</p><p>Claude needs the <b>herdr skill</b>, an instruction sheet that teaches it the herdr commands. Without it, Claude doesn't know <b>herdr agent list</b> even exists.</p><p>It also has to be started <b>inside</b> a herdr pane. Started anywhere else, it can't reach herdr.</p><span class="chip">herdr agent list</span>`},
+  opencode:{k:"Pane 2 · flexible, many models", t:"opencode", c:"#E3EEFF", b:`<p>opencode is another coding agent. Its superpower is flexibility: it can work with many different AI models.</p><p>In our orchestra it takes jobs from Claude, for example writing captions for your retreat videos, and sends the result back.</p><div class="say"><b>Try saying to Claude:</b> "Use herdr to prompt the opencode agent: say hello."</div>`},
+  agy:{k:"Pane 3 · Google's agent", t:"agy", c:"#F1E8FD", b:`<p>agy is the Antigravity command line tool. Inside herdr's settings it's called <b>antigravity-cli</b>, and in the agent list it shows up as antigravity.</p><p>It sits in its own pane, ready to take a job, like making a flyer for your next retreat.</p><span class="chip">agy</span>`},
+  folder:{k:"Where it all starts", t:"Your project folder", c:"#FFF3C4", b:`<p>herdr opens in whatever folder your Terminal is in. So first step into a project folder, then type herdr.</p><p>Think of it as choosing the concert hall before the orchestra walks in.</p><span class="chip">cd my-project</span><br><span class="chip">herdr</span>`},
+  wires:{k:"How messages travel", t:"No MCP needed", c:"#FFF3C4", b:`<p>Agents don't talk to each other directly. Each one types a <b>herdr</b> command inside its own pane, and herdr carries the message through the server.</p><p>There is no MCP server for herdr. The herdr command is the only phone line, and it only works from <b>inside</b> a herdr pane.</p><span class="chip">herdr agent prompt opencode "..." --wait</span>`},
+  tui:{k:"Option A · what we use", t:"Terminal herdr", c:"#E3EEFF", b:`<p>You type <b>herdr</b> in the Terminal. It runs its own server on your Mac, and agents started in its panes can see each other.</p><p>This is the version the Claude, opencode and agy hookups are built for, so it's the one we use in class.</p><span class="chip">herdr status</span><br><span class="chip">herdr agent list</span>`},
+  app:{k:"Option B", t:"Herdr desktop app", c:"#F1E8FD", b:`<p>A separate app you open like any Mac app. The window is called <b>herdr-app</b> and its engine is called <b>hc</b>.</p><p>It runs its <b>own</b> server. Agents opened in the app only show up in the app, so the terminal herdr can't see them.</p><span class="chip">hc server status</span><br><span class="chip">hc ls</span>`},
+  wall:{k:"Why they don't mix", t:"Two separate worlds", c:"#FFE9E9", b:`<p>Same name, two different programs, two different servers. They don't share agents: what runs in one doesn't show up in the other.</p><p>So if Claude is opened in the desktop app and you ask terminal herdr for the agent list, it finds nobody. That may be what happened in Session 5.</p><div class="say"><b>Rule of thumb:</b> pick ONE. We use the terminal herdr.</div>`},
+  s1:{k:"Setup step 1", t:"Start herdr in a project folder", c:"#FFF3C4", b:`<p>Open the Terminal app (not inside herdr yet). Go into your project folder, then type herdr. It starts the server if needed and opens the herdr screen.</p><span class="chip">cd my-project</span><br><span class="chip">herdr</span><p>To double check from a second Terminal window:</p><span class="chip">herdr status</span>`},
+  s2:{k:"Setup step 2", t:"Open a pane per agent", c:"#E3EEFF", b:`<p>Split the window so you have one pane per agent: use the right-click menu, or press <b>ctrl+b</b> then <b>v</b>.</p><p>Then start one agent in each pane. Each one needs to be logged in already.</p><span class="chip">claude</span> <span class="chip">opencode</span> <span class="chip">agy</span>`},
+  s3:{k:"Setup step 3", t:"Add the herdr skill to Claude", c:"#FFE9E9", b:`<p>A skill is a little instruction sheet. This one teaches Claude every herdr command, like how to list agents and send them jobs.</p><p>This saves herdr's own copy into Claude's skills folder (no extra tools needed):</p><span class="chip">mkdir -p ~/.claude/skills/herdr &amp;&amp; herdr --skill &gt; ~/.claude/skills/herdr/SKILL.md</span><p>Then restart Claude inside a herdr pane.</p>`},
+  s4:{k:"Setup step 4", t:"Give each agent a role", c:"#F1E8FD", b:`<p>Just like an orchestra has seats, give each agent a job it's good at:</p><p><b>Claude</b> plans the work and hands it out.<br><b>opencode</b> writes captions for your videos.<br><b>agy</b> makes flyers for your retreats.</p><div class="say"><b>Try saying to Claude:</b> "Plan my retreat promo, then use herdr to ask opencode for 3 captions."</div>`}
+};
+
+const STEPS = [
+  {cap:`Meet your orchestra. herdr is the conductor, the server keeps everyone connected, and each pane is a player.`, lit:["conductor","server","claude","opencode","agy","folder"], info:"conductor"},
+  {cap:`In Terminal, step into your project folder and type <code>herdr</code>. The background server wakes up.`, lit:["folder","server"], flow:[["p-folder",1]], strip:"s1", info:"server"},
+  {cap:`Start one agent in each pane: <code>claude</code>, <code>opencode</code> and <code>agy</code>.`, lit:["claude","opencode","agy"], strip:"s2", info:"claude"},
+  {cap:`Claude asks who else is here by running <code>herdr agent list</code>.`, lit:["claude","conductor","server","wires"], flow:[["p-claude",0],["p-server",0]], bubble:{id:"claude", lines:["$ herdr agent list","","",""]}},
+  {cap:`herdr answers with the list: claude, opencode and antigravity, each idle or working.`, lit:["claude","conductor","server","wires"], flow:[["p-server",1],["p-claude",1]], bubble:{id:"claude", lines:["herdr agent list says:","  claude        working","  opencode      idle","  antigravity   idle"]}},
+  {cap:`Claude sends opencode a job with <code>herdr agent prompt</code>.`, lit:["claude","conductor","opencode","wires"], flow:[["p-claude",0],["p-open",1]], bubble:{id:"claude", lines:["$ herdr agent prompt opencode",'  "3 captions for my retreat video"',"  --wait",""]}, info:"opencode"},
+  {cap:`opencode does the job and replies. Claude waited for it (that's what <code>--wait</code> is for) and gets the result.`, lit:["claude","conductor","opencode","wires"], flow:[["p-open",0],["p-claude",1]], bubble:{id:"open", lines:["Done! 3 captions:","1. Slow down. Breathe in. Arrive.","2. Your reset starts here."]}},
+  {cap:`That's the trick: one conductor, a server that stays on, and agents that talk through herdr.`, lit:["conductor","server","claude","opencode","agy","folder"]}
+];
+
+const $ = s => document.querySelector(s);
+let step = -1, appView = false, anim = null;
+
+function showInfo(key){
+  const d = INFO[key]; if(!d) return;
+  $("#infoKicker").textContent = d.k; $("#infoTitle").textContent = d.t; $("#infoBody").innerHTML = d.b;
+  $("#info").style.background = d.c;
+  document.querySelectorAll(".hot.sel").forEach(e=>e.classList.remove("sel"));
+  document.querySelectorAll(`.hot[data-key="${key}"]`).forEach(e=>e.classList.add("sel"));
+}
+document.querySelectorAll("[data-key]").forEach(el=>{
+  el.addEventListener("click", ()=>showInfo(el.dataset.key));
+  el.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();showInfo(el.dataset.key);} });
+});
+
+function stopAnim(){ if(anim){cancelAnimationFrame(anim); anim=null;} $("#dot").setAttribute("opacity",0); document.querySelectorAll(".wire-line.flow").forEach(p=>p.classList.remove("flow")); }
+function runFlow(segs){
+  stopAnim(); if(!segs) return;
+  const paths = segs.map(([id,rev])=>({p:document.getElementById(id), rev}));
+  paths.forEach(s=>s.p.classList.add("flow"));
+  const lens = paths.map(s=>s.p.getTotalLength()); const total = lens.reduce((a,b)=>a+b,0);
+  const dot = $("#dot"); dot.setAttribute("opacity",1);
+  const dur = 1800; let t0 = null;
+  const tick = ts=>{ if(t0===null) t0=ts; let d=((ts-t0)%(dur+500))/dur; if(d>1) d=1;
+    let dist=d*total, i=0; while(i<paths.length-1 && dist>lens[i]){dist-=lens[i];i++;}
+    const s=paths[i], L=lens[i], pt=s.p.getPointAtLength(s.rev? L-Math.min(dist,L) : Math.min(dist,L));
+    dot.setAttribute("cx",pt.x); dot.setAttribute("cy",pt.y); anim=requestAnimationFrame(tick); };
+  anim=requestAnimationFrame(tick);
+}
+function setBubble(b){
+  ["claude","open"].forEach(id=>$("#b-"+id).setAttribute("opacity",0));
+  if(!b) return;
+  const pre = b.id==="claude" ? "bc" : "bo";
+  b.lines.forEach((l,i)=>{ const el=document.getElementById(pre+(i+1)); if(el) el.textContent=l; });
+  $("#b-"+b.id).setAttribute("opacity",1);
+}
+function render(){
+  const svg=$("#diagram");
+  document.querySelectorAll("#view-main .hot").forEach(e=>e.classList.remove("lit","dim"));
+  document.querySelectorAll(".step").forEach(e=>e.classList.remove("lit"));
+  $("#back").disabled = step<=0; $("#next").disabled = step>=STEPS.length-1;
+  if(step<0){ svg.classList.remove("playing"); setBubble(null); stopAnim(); return; }
+  if(appView) setView(false);
+  const s=STEPS[step]; svg.classList.add("playing");
+  document.querySelectorAll("#view-main .hot").forEach(e=>{ (s.lit.includes(e.dataset.key)? e.classList.add("lit") : e.classList.add("dim")); });
+  if(s.strip) document.querySelector(`.step[data-key="${s.strip}"]`).classList.add("lit");
+  $("#stepno").textContent = `Step ${step+1} of ${STEPS.length}`; $("#captext").innerHTML = s.cap;
+  setBubble(s.bubble); runFlow(s.flow);
+  if(s.info) showInfo(s.info);
+}
+$("#play").onclick = ()=>{ step=0; render(); };
+$("#next").onclick = ()=>{ if(step<STEPS.length-1){step++; render();} };
+$("#back").onclick = ()=>{ if(step>0){step--; render();} };
+document.addEventListener("keydown", e=>{ if(e.target.closest("[data-key]")) return; if(e.key==="ArrowRight") $("#next").click(); if(e.key==="ArrowLeft") $("#back").click(); });
+
+function setView(app){
+  appView=app; const t=$("#toggle"); t.setAttribute("aria-pressed", app);
+  $("#view-main").style.display = app? "none":""; $("#view-app").style.display = app? "":"none";
+  if(app){ step=-1; render(); $("#stepno").textContent="Compare"; $("#captext").innerHTML="Two programs share the name Herdr. Each runs its <b>own</b> server, so agents in one can't see the other. Tap a side to learn more."; showInfo("wall"); $("#next").disabled=true; }
+  else if(step<0){ $("#stepno").textContent="Explore"; $("#captext").textContent="Tap any box to learn what it is, or press Play to watch the agents talk."; }
+}
+$("#toggle").onclick = ()=>setView(!appView);
+$("#toggle").onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault(); setView(!appView);} };
+render();
+</script>
+</body>
+</html>
