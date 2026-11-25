@@ -124,7 +124,6 @@
       border-radius: 999px;
       border: 2px solid var(--ink);
     }
-    .badge.session { background: var(--yellow); }
     .badge.type-html { background: #E8F1FF; color: #1a5fcc; }
     .badge.type-svg { background: #F3E8FF; color: #6d2cb8; }
     .badge.type-png { background: #E7F8EA; color: #1f7a2f; }
@@ -200,7 +199,6 @@
       <a class="card" href="simulators/herdr-orchestra.html" target="_blank" rel="noopener noreferrer" data-type="html">
         <span class="bar" aria-hidden="true"></span>
         <div class="meta">
-          <span class="badge session">Session 6</span>
           <span class="badge type type-html">html</span>
         </div>
         <h2>How herdr connects your agents</h2>
@@ -213,7 +211,6 @@
       <a class="card" href="simulators/github-plain-words.html" target="_blank" rel="noopener noreferrer" data-type="html">
         <span class="bar" aria-hidden="true"></span>
         <div class="meta">
-          <span class="badge session">Session 6</span>
           <span class="badge type type-html">html</span>
         </div>
         <h2>GitHub in plain words</h2>
@@ -226,7 +223,6 @@
       <a class="card" href="simulators/voiceover-trainer.html" target="_blank" rel="noopener noreferrer" data-type="html">
         <span class="bar" aria-hidden="true"></span>
         <div class="meta">
-          <span class="badge session">Session 6</span>
           <span class="badge type type-html">html</span>
         </div>
         <h2>Your voiceover trainer</h2>
@@ -256,7 +252,6 @@
         const href = "simulators/" + file.replace(/^\/+/, "");
         const title = item.title || file;
         const desc = item.description || "";
-        const session = item.session || "";
         const added = formatAdded(item.added);
         const a = document.createElement("a");
         a.className = "card";
@@ -267,7 +262,6 @@
         a.innerHTML =
           '<span class="bar" aria-hidden="true"></span>' +
           '<div class="meta">' +
-            (session ? '<span class="badge session">Session ' + session + "</span>" : "") +
             '<span class="badge type ' + typeClass(typ) + '">' + typ + "</span>" +
           "</div>" +
           "<h2></h2>" +
